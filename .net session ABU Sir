@@ -1,0 +1,21 @@
+ empdata1 obj = null;
+
+            for (int i = 0; i < objs.Length; i++)
+            {
+                obj = new empdata1();
+
+                Console.WriteLine("Enter empno");
+                obj.empno = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Enter empname");
+                obj.empname = Console.ReadLine();
+
+                Console.WriteLine("Enter job");
+                obj.job = Console.ReadLine();
+
+                Console.WriteLine("Enter salary");
+                obj.salary = int.Parse(Console.ReadLine());
+
+                objs[i] = obj;
+                Console.WriteLine();
+            }
