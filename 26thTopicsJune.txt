@@ -1,0 +1,527 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+    class emp
+    {
+        public void read()
+        {
+            Console.WriteLine("reading /empno/empname/address/phone/");
+        }
+        public void print()
+        {
+            Console.WriteLine("printing /empno/empname/address/phone/");
+        }
+    }
+
+    class reg_employee:emp
+    {
+        public void read1()
+        {
+            base.read();
+            Console.WriteLine("reading /salary/tax/ta/sa/");
+        }
+        public void cal_pay()
+        {
+            Console.WriteLine("calculating netpay(salary,tax,ta,sa)");
+        }
+        public void print1()
+        {
+            base.print();
+            Console.WriteLine("printing /salary/tax/ta/sa/netpay");
+        }
+    }
+
+    class con_employees:emp
+    {
+        public void read1()
+        {
+            base.read();
+            Console.WriteLine("reading /cont_period/cont_amount/GST/pa");
+        }
+        public void cal_pay()
+        {
+            Console.WriteLine("calculating netpay(cont_period/cont_amount/GST)");
+        }
+        public void print1()
+        {
+            base.print();
+            Console.WriteLine("printing /cont_period/cont_amount/GST/pa/netpay");
+        }
+    }
+
+    class free_employees:emp
+    {
+        public void read1()
+        {
+            base.read();
+            Console.WriteLine("reading /weeklypay/tds/free_allowance/");
+        }
+        public void cal_pay()
+        {
+            Console.WriteLine("calculating netpay(/weeklypay/tds/free_allowance)");
+        }
+        public void print1()
+        {
+            base.print();
+            Console.WriteLine("printing /weeklypay/tds/free_allowance/netpay");
+        }
+    }
+
+   
+
+    class Class6
+    {
+        static void Main(string[] args)
+        {
+
+            int choice = 0;
+            do
+            {
+                Console.WriteLine("--Employee Management System--");
+                Console.WriteLine("1.Regular Employees");
+                Console.WriteLine("2.Contract Employees");
+                Console.WriteLine("3.FreeLance Employees");
+                Console.WriteLine("4.Others");
+                Console.WriteLine("Press any Key.......");
+                int key = Convert.ToInt32(Console.ReadLine());
+
+                if (key == 1)
+                {
+                    reg_employee obj = new reg_employee();
+                    obj.read1();
+                    obj.cal_pay();
+                    obj.print1();
+                }
+
+                else if (key == 2)
+                {
+                    con_employees obj = new con_employees();
+                    obj.read1();
+                    obj.cal_pay();
+                    obj.print1();
+                }
+
+                else if (key == 3)
+                {
+                    free_employees obj = new free_employees();
+                    obj.read1();
+                    obj.cal_pay();
+                    obj.print1();
+                }
+
+                Console.WriteLine("press 1 to continue 0 to exit");
+                choice = Convert.ToInt32(Console.ReadLine());
+            }
+            while (choice == 1);
+
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+
+    class des_poly
+    {
+        public void Search(int empno)
+        {
+            //connectig a database and retrice a record
+            Console.WriteLine("search by empno {0}",empno);
+        }
+
+        public void Search(string job)
+        {
+            //connectig a database and retrice a record
+            Console.WriteLine("search by job {0}", job);
+        }
+
+        public void Search(string job,int deptno)
+        {
+            //connectig a database and retrice a record
+            Console.WriteLine("search by job and deptno {0}",deptno);
+        }
+
+        public void Search(int deptno, string location)
+        {
+            //connectig a database and retrice a record
+            Console.WriteLine("search by deptno and location {0}", location);
+        }     
+    }
+    class Class7
+    {
+        static void Main(string[] args)
+        {
+            des_poly d = new des_poly();
+
+            int choice = 0;
+            do
+            {
+                Console.WriteLine("--Employee Search--");
+                Console.WriteLine("1.SearchByEmpno");
+                Console.WriteLine("2.SearchByJob");
+                Console.WriteLine("3.SearchByJob and Deptno");
+                Console.WriteLine("4.SearchByDeptno and Location");
+                Console.WriteLine("Press any Key to Search.......");
+                int key = Convert.ToInt32(Console.ReadLine());
+
+                if (key == 1)
+                {
+                    Console.WriteLine("enter the empno to search");
+                    int empno = Convert.ToInt32(Console.ReadLine());
+                    d.Search(empno);
+                }
+
+                else if (key == 2)
+                {
+                    Console.WriteLine("enter the job to search");
+                    string job = Console.ReadLine();
+                    d.Search(job);
+                }
+
+                else if (key == 3)
+                {
+                    Console.WriteLine("enter the job ");
+                    string job = Console.ReadLine();
+                    Console.WriteLine("enter the deptno");
+                    int deptno = Convert.ToInt32(Console.ReadLine());
+                    d.Search(job, deptno);
+                }
+
+                else if (key == 4)
+                {
+
+                    Console.WriteLine("enter the deptno");
+                    int deptno = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("enter the location ");
+                    string location = Console.ReadLine();
+                    d.Search(deptno, location);
+                }
+                Console.WriteLine("press 1 to continue 0 to exit");
+                choice = Convert.ToInt32(Console.ReadLine());
+
+            }
+            while (choice == 1);
+        }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+    class emp_class1
+    {
+        public void readInfo()
+        {
+            Console.WriteLine("reading : empno,empname,email,phone,salary,location,bg,age,passno");
+        }
+        public void printInfo()
+        {
+            Console.WriteLine("printing : empno,empname,email,phone,salary,location,bg,age,passno");
+        }
+        public virtual void cal_monthly_pay()
+        {
+            Console.WriteLine("cal : monthlypay = salary-tax(3)-pf(4)+ta(5)+sa($500)");
+        }
+    }
+
+    class emp_class1_subs1:emp_class1
+    {
+        public override void cal_monthly_pay()
+        {
+            Console.WriteLine("cal : monthlypay = salary-tax(6)+ta(7)+p_allowance(2)+sa($500)");
+        }
+        public void test()
+        {
+            Console.WriteLine("this is test");
+        }
+    }
+
+
+    class emp_class1_subs2 : emp_class1
+    {
+        public override void cal_monthly_pay()
+        {
+            Console.WriteLine("cal : monthlypay = salary-tax(6)+sa($500)");
+        }
+    }
+
+    class Class8
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("--Employee details--");
+            Console.WriteLine("1.version1");
+            Console.WriteLine("2.version2");
+            Console.WriteLine("3.version3");
+          
+            Console.WriteLine("Press any Key ......");
+            int key = Convert.ToInt32(Console.ReadLine());
+            emp_class1 obj;
+            if (key == 1)
+            {
+                obj = new emp_class1();
+                obj.readInfo();
+                obj.printInfo();
+                obj.cal_monthly_pay();
+            }
+
+            else if (key == 2)
+            {
+                obj = new emp_class1_subs1();
+                obj.readInfo();
+                obj.printInfo();
+                obj.cal_monthly_pay();
+            }
+
+            else if (key == 3)
+            {
+                obj = new emp_class1_subs2();
+                obj.readInfo();
+                obj.printInfo();
+                obj.cal_monthly_pay();
+            }
+
+
+
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+
+   
+
+    //public interface calculator
+    //{
+    //    int add(int a, int b);
+    //    int subs(int a, int b);
+    //    int multi(int a, int b);
+    //    int divs(int a, int b);
+    //}
+
+
+
+    public interface bank_trans
+    {
+        void checkbalance();
+        void sourceDeduct();
+        void TargetAdd();
+    }
+
+    class bank : bank_trans
+    {
+        public void checkbalance()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void sourceDeduct()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void TargetAdd()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+
+    class calc1 
+    {
+        public int add(int a, int b)
+        {
+            return a + b;
+        }
+
+        public int divs(int a, int b)
+        {
+            return a / b;
+        }
+
+        public int multi(int a, int b)
+        {
+            return a * b;
+        }
+
+        public int subs(int a, int b)
+        {
+            return a - b;
+        }
+      
+    }
+
+
+    public interface calc2
+    {
+        int addition(int a, int b);
+    }
+
+    class claculator1 : calc2
+    {
+        public int addition(int a, int b)
+        {
+            return a + b;
+        }
+    }
+
+    class calculator2 : calc2
+    {
+        public int addition(int a, int b)
+        {
+            return a + b;
+        }
+    }
+
+    class calculator3 : calc2
+    {
+        public int addition(int a, int b)
+        {
+            return a + b;
+        }
+    }
+
+
+
+    class Class9
+    {
+        static void Main(string[] args)
+        {
+            calc1 c = new calc1();
+            int z = c.add(10, 30);
+            Console.WriteLine(z);
+
+
+            calc2 c1;
+            
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+
+    abstract class database
+    {
+        int serverId;
+        string serverName;
+        public database(int serverId,string serverName)
+        {
+            this.serverId = serverId;
+            this.serverName = serverName;
+        }
+        public void serverConnection()
+        {
+            Console.WriteLine("server connection code: server connected id= {0} sername = {1}",serverId,serverName);
+        }
+
+        public abstract void credentials();
+        public abstract void database_con_string();
+        public abstract void objects();
+    }
+    class oracle : database
+    {
+        public oracle():base(12000,"12:ff:55")
+        {
+
+        }
+        public override void credentials()
+        {
+            Console.WriteLine("uname,password,host,domain");
+        }
+
+        public override void database_con_string()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void objects()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class sqlserver : database
+    {
+        public sqlserver():base(12000, "12:ff:55")
+        {
+
+        }
+        public override void credentials()
+        {
+            Console.WriteLine("uname,password,Auth");
+        }
+
+        public override void database_con_string()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void objects()
+        {
+            throw new NotImplementedException();
+        }
+    }
+    class Class10
+    {
+        static void Main(string[] args)
+        {
+            database d;
+
+            Console.WriteLine("database connections");
+            Console.WriteLine("1.oracle");
+            Console.WriteLine("2.sqlserver");
+            Console.WriteLine("press any key..");
+            int key = Convert.ToInt32(Console.ReadLine());
+
+            if (key == 1)
+            {
+                oracle ora = new oracle();
+                ora.serverConnection();
+                ora.credentials();
+            }
+
+            else if (key == 2)
+            {
+                sqlserver sq = new sqlserver();
+                sq.serverConnection();
+                sq.credentials();
+            }
+        }
+    }
+}
