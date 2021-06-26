@@ -81,5 +81,6 @@ namespace ConsoleApp1
             int z = c.add(10, 20);
             Console.Write(z);
         }
+        //cannot make onstance od an interface
     }
 }
