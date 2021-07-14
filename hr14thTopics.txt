@@ -1,0 +1,431 @@
+read employee information in main
+
+9 employee objects
+
+
+empno.empname,deptno,salary
+
+read in list<employee>
+
+3 dept 10
+3 dept 40
+3 dept 20
+
+
+pass this list to class
+within that class manupulate based on deptno
+create seperate lists based on deptno
+
+these list add to a dictionary;
+return that dictionary to main
+
+in the main print dictionary based on dept names
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Collections;
+
+namespace ConsoleApp10
+{
+    class iterator5
+    {
+        public void iterator(IEnumerable lst)
+        {
+            IEnumerator lst1 = lst.GetEnumerator();
+           while(lst1.MoveNext())
+            {
+                Console.WriteLine(lst1.Current.ToString());
+            }
+        }
+    }
+
+    class Class15
+    {
+        static void Main(string[] args)
+        {
+            //List,ArrayList,Dictionary,Hashtable,Ienumrator,Ienumerable,sortedlist,stack,quee,linkedlist
+            iterator5 cls = new iterator5();
+
+            List<int> ls = new List<int>();
+            List<int> ls1 = new List<int>();
+            List<string> strls = new List<string>();
+            List<emp1> objls = new List<emp1>();
+
+            ls.Add(100);
+            ls.Add(200);
+            ls.Add(300);
+            ls.Add(400);
+            ls.Add(500);
+            ls.Add(600);
+            ls.Add(700);
+            ls.Add(800);
+
+            ls1.Add(60);
+            ls1.Add(70);
+            ls1.Add(80);
+
+            Console.WriteLine("After Adding Range inbetween the list");
+            //ls.AddRange(ls1);
+            ls.InsertRange(3, ls1);
+
+            cls.iterator(ls);
+
+            Console.WriteLine("Printing list valus using Ienumerator");
+            IEnumerator<int> en = ls.GetEnumerator();
+          
+            while(en.MoveNext())
+            {
+                Console.WriteLine(en.Current.ToString());
+            }
+            
+
+            //ls.RemoveAt(4);
+            Console.WriteLine("list in reverse");
+            ls.Reverse();
+
+            cls.iterator(ls);
+
+            Console.WriteLine("after remove value from the list");
+            ls.Remove(400);
+            cls.iterator(ls);
+            ls.RemoveRange(3, 2);
+            Console.WriteLine("after remove range from the list");
+            cls.iterator(ls);
+
+            int[] arr = new int[3];
+            arr[0] = 10;
+            arr[1] = 20;
+            arr[2] = 30;
+            Console.WriteLine("printing traditional array");
+            cls.iterator(arr);
+
+
+            List<int> arrlst = arr.ToList();
+            Console.WriteLine("after converting to list");
+            cls.iterator(arrlst);
+
+            string str = "laptop,mobile,tv,tablet,fridge";
+            string[] starr = str.Split(',');
+            List<string> stls = starr.ToList();
+            Console.WriteLine("after converting a text to list");
+            cls.iterator(stls);
+
+
+
+
+            //strls.Add("Chennai");
+            //strls.Add("Trv");
+            //strls.Add("Cochin");
+            //strls.Add("mumbai");
+
+            //objls.Add(new emp1 { empno = 1001, empname = "sam", salary = 7000 });
+            //objls.Add(new emp1 { empno = 1002, empname = "raj", salary = 8000 });
+            //objls.Add(new emp1 { empno = 1003, empname = "prashant", salary = 9000 });
+            //objls.Add(new emp1 { empno = 1001, empname = "john", salary = 7500 });
+
+
+            ArrayList Arrls = new ArrayList();
+            Arrls.Add(100);
+            Arrls.Add("chennai");
+            Arrls.Add(true);
+            Arrls.Add(10.55f);
+            Arrls.Add("cochin");       
+
+            Console.WriteLine("Arraylist Values");
+            cls.iterator(Arrls);
+
+            Arrls.Remove("chennai");
+
+            Console.WriteLine("Arraylist After removing a value");
+            cls.iterator(Arrls);
+
+            Stack st = new Stack();
+
+            for(int i=0;i<10;i++)
+            {
+                st.Push(i * 100);
+            }
+            Console.WriteLine("stack value");
+            cls.iterator(st);
+
+
+            Queue q = new Queue();
+
+            for (int i = 0; i < 10; i++)
+            {
+                q.Enqueue(i * 100);
+            }
+            Console.WriteLine("quee values");
+            cls.iterator(q);
+
+
+            Hashtable hs = new Hashtable();
+
+            hs.Add(100, "cochin");
+            hs.Add("trv", 78000);
+            hs.Add(101, "cochin");
+            hs.Add(102, 54000);
+            Console.WriteLine("hash tables");
+            foreach (DictionaryEntry x in hs)
+            {
+                Console.WriteLine("key = {0} value = {1}", x.Key, x.Value);
+            }
+
+            LinkedList<int> lst = new LinkedList<int>();
+            lst.AddFirst(100);
+            lst.AddFirst(300);
+            lst.AddFirst(700);
+            lst.AddLast(900);
+            
+            Console.WriteLine("linked list");
+            foreach (int x in lst)
+            {
+                Console.WriteLine(x);
+            }
+
+
+            //Dictionary<int, string> di = new Dictionary<int, string>();
+            //Hashtable hs = new Hashtable();
+            //SortedList sr = new SortedList();
+            //Stack st = new Stack();
+            //Queue q = new Queue();
+
+        }
+    }
+}
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+
+    class emp_datasource
+    {
+        Dictionary<string, List<empdata1>> di = new Dictionary<string, List<empdata1>>();
+        public emp_datasource(Dictionary<string, List<empdata1>> di)
+        {
+            this.di = di;
+        }
+
+        public void print()
+        {
+            foreach (KeyValuePair<string, List<empdata1>> x in di)
+            {
+                Console.WriteLine("--{0} List--", x.Key);
+                foreach(empdata1 x1 in x.Value)
+                {
+                    Console.WriteLine("empno = {0} empname = {1} job = {2} salary = {3}", x1.empno, x1.empname, x1.job, x1.salary);
+                }
+            }
+        }
+    }
+
+    class Class16
+    {
+        static void Main(string[] args)
+        {
+
+            List<empdata1> man_ls = new List<empdata1>();
+            List<empdata1> adm_ls = new List<empdata1>();
+            List<empdata1> dev_ls = new List<empdata1>();
+
+            man_ls.Add(new empdata1 { empno = 1001, empname = "sam", job = "manager", salary = 8000 });
+            man_ls.Add(new empdata1 { empno = 1002, empname = "raj", job = "manager", salary = 9000 });
+            man_ls.Add(new empdata1 { empno = 1003, empname = "rakesh", job = "manager", salary = 8000 });
+
+            adm_ls.Add(new empdata1 { empno = 1006, empname = "vinodh", job = "admin", salary = 7000 });
+            adm_ls.Add(new empdata1 { empno = 1007, empname = "ranbir", job = "admin", salary =9000 });
+            adm_ls.Add(new empdata1 { empno = 1008, empname = "rajiv", job = "admin", salary = 8000 });
+
+            dev_ls.Add(new empdata1 { empno = 1004, empname = "bansal", job = "dev", salary = 7000 });
+            dev_ls.Add(new empdata1 { empno = 1005, empname = "nagesh", job = "dev", salary = 5000 });
+            dev_ls.Add(new empdata1 { empno = 1009, empname = "gowtham", job = "dev", salary = 6000 });
+
+            Dictionary<string, List<empdata1>> dObj = new Dictionary<string, List<empdata1>>();
+
+            dObj.Add("Managers", man_ls);
+            dObj.Add("Admins", adm_ls);
+            dObj.Add("Developers", dev_ls);
+
+            emp_datasource obj = new emp_datasource(dObj);
+            obj.print();
+
+
+            //Dictionary<int, string> di = new Dictionary<int, string>();
+
+            //di.Add(1001, "Bangalore");
+            //di.Add(1002, "Cochin");
+            //di.Add(1003, "Trv");
+            //di.Add(1004, "Mumbai");
+            //di.Add(1005, "Delhi");
+
+            ////Console.WriteLine(di[1003]);
+
+            //foreach(KeyValuePair<int,string> x in di)
+            //{
+            //    Console.WriteLine("key = {0} value = {1}", x.Key, x.Value);
+            //}
+
+            //Dictionary<int, emp1> di1 = new Dictionary<int, emp1>();
+            //emp1 obj;
+            //int choice = 0;
+            //do
+            //{
+            //    obj = new emp1();
+
+            //    Console.WriteLine("Enter empno");
+            //    obj.empno = int.Parse(Console.ReadLine());
+
+            //    Console.WriteLine("Enter empname");
+            //    obj.empname = Console.ReadLine();
+
+            //    Console.WriteLine("Enter salary");
+            //    obj.salary = int.Parse(Console.ReadLine());
+
+            //    di1.Add(obj.empno,obj);
+
+            //    Console.WriteLine("press 1 to continue 0 to exit");
+            //    choice = int.Parse(Console.ReadLine());
+            //}
+            //while (choice == 1);
+
+            //foreach (KeyValuePair<int, emp1> x in di1)
+            //{
+            //    Console.WriteLine("key = {0} , empno = {1} empname= {2} salary = {3}", x.Key, x.Value.empno,x.Value.empname,x.Value.salary);
+            //}
+
+
+
+
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+    class iterator
+    {
+        IEnumerator<int> elist;
+        public iterator(IEnumerator<int> ls)
+        {
+            this.elist = ls;
+        }
+
+        public void iterator1()
+        {
+            Console.WriteLine("this is first iterator");
+
+            while(elist.MoveNext())
+            {
+                Console.WriteLine(elist.Current.ToString());
+                if (Convert.ToInt32(elist.Current.ToString())==500)
+                {
+                    //elist.Reset();
+                    iterator2(elist);
+                    break;
+                }
+               
+            }
+
+            //foreach (int x in ls)
+            //{
+            //    if (x == 500)
+            //    {
+            //        iterator2(ls);
+            //        break;
+            //    }
+            //    Console.WriteLine(x);
+            //}
+        }
+
+        public void iterator2(IEnumerator<int> ls1)
+        {
+            Console.WriteLine("this is second iterator");
+            while (ls1.MoveNext())
+            {
+                Console.WriteLine(ls1.Current.ToString());
+            }
+
+            //Console.WriteLine("this is second iterator");
+            //foreach (int x in ls1)
+            //{
+            //    Console.WriteLine(x);
+            //}
+        }
+    }
+
+    class Class17
+    {
+        static void Main(string[] args)
+        {
+            List<int> ls = new List<int>();
+            ls.Add(100);
+            ls.Add(200);
+            ls.Add(300);
+            ls.Add(400);
+            ls.Add(500);
+            ls.Add(600);
+            ls.Add(700);
+            ls.Add(800);
+            ls.Add(900);
+
+            IEnumerator<int> elist = ls.GetEnumerator();
+
+            iterator cls = new iterator(elist);
+            cls.iterator1();
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+    class Class18
+    {
+        static void Main(string[] args)
+        {
+            List<empdata1> objls = new List<empdata1>();
+
+            objls.Add(new empdata1 { empno = 1001, empname = "sam", job="manager", salary = 7000 });
+            objls.Add(new empdata1 { empno = 1002, empname = "raj", job = "admin", salary = 8000 });
+            objls.Add(new empdata1 { empno = 1003, empname = "prashant", job = "admin", salary = 9000 });
+            objls.Add(new empdata1 { empno = 1001, empname = "john", job = "manager", salary = 7500 });
+
+            var result = from x in objls select x;
+            var result1 = from x in objls select new { x.empno, x.empname, x.salary };
+
+            foreach(var x in result1)
+            {
+                Console.WriteLine("empno = {0} empname = {1} salary = {2}", x.empno, x.empname, x.salary);
+            }
+
+        }
+    }
+}
+
