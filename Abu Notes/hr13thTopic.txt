@@ -1,0 +1,370 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+  public interface emp
+    {
+        void read1();
+        void cal_pay();
+        void print1();
+    }
+
+    class reg_employee:emp
+    {
+        public void read1()
+        {
+          
+            Console.WriteLine("reading /salary/tax/ta/sa/");
+        }
+        public void cal_pay()
+        {
+            Console.WriteLine("calculating netpay(salary,tax,ta,sa)");
+        }
+        public void print1()
+        {
+         
+            Console.WriteLine("printing /salary/tax/ta/sa/netpay");
+        }
+    }
+
+    class con_employees:emp
+    {
+        public void read1()
+        {
+           
+            Console.WriteLine("reading /cont_period/cont_amount/GST/pa");
+        }
+        public void cal_pay()
+        {
+            Console.WriteLine("calculating netpay(cont_period/cont_amount/GST)");
+        }
+        public void print1()
+        {
+          
+            Console.WriteLine("printing /cont_period/cont_amount/GST/pa/netpay");
+        }
+    }
+
+    class free_employees:emp
+    {
+        public void read1()
+        {
+          
+            Console.WriteLine("reading /weeklypay/tds/free_allowance/");
+        }
+        public void cal_pay()
+        {
+            Console.WriteLine("calculating netpay(/weeklypay/tds/free_allowance)");
+        }
+        public void print1()
+        {
+           
+            Console.WriteLine("printing /weeklypay/tds/free_allowance/netpay");
+        }
+    }
+
+
+    class factory
+    {
+        emp Iobj = null;
+        public emp getobj(int key)
+        {
+            if (key == 1)
+            {
+                Iobj = new reg_employee();
+               
+            }
+
+            else if (key == 2)
+            {
+               Iobj = new con_employees();
+              
+            }
+
+            else if (key == 3)
+            {
+                Iobj = new free_employees();
+             
+            }
+            return Iobj;
+        }
+    }
+
+   
+
+    class Class6
+    {
+        static void Main(string[] args)
+        {
+
+            int choice = 0;
+            do
+            {
+                Console.WriteLine("--Employee Management System--");
+                Console.WriteLine("1.Regular Employees");
+                Console.WriteLine("2.Contract Employees");
+                Console.WriteLine("3.FreeLance Employees");
+                Console.WriteLine("4.Others");
+                Console.WriteLine("Press any Key.......");
+                int key = Convert.ToInt32(Console.ReadLine());
+
+                      
+                factory fc = new factory();
+                emp obj= fc.getobj(key);
+                obj.read1();
+                obj.cal_pay();
+                obj.print1();   
+                
+                Console.WriteLine("press 1 to continue 0 to exit");
+                choice = Convert.ToInt32(Console.ReadLine());
+            }
+            while (choice == 1);
+
+        }
+    }
+}
+
+
+
+
+
+P2
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+    class Database_Op
+    {
+        public bool Save(emp4 obj)
+        {
+            bool flag = false;
+            if(tech_validation(obj))
+            {
+                flag = true;
+                //creating database connection and storing the object to the table
+            }
+            return flag;
+           
+        }
+
+        private bool tech_validation(emp4 obj)
+        {
+            bool flag = false;
+            if(obj.salary.ToString().Length>=5)//25000
+            {
+                if (func_validation(obj))
+                {
+                    flag = true;
+                }
+            }
+            return flag;
+        }
+
+       private bool func_validation(emp4 obj)
+        {
+            bool flag = false;
+            if(obj.salary>=30000)
+            {
+                flag = true;
+            }
+            return flag;
+        }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+
+    class Class11
+    {
+        static void Main(string[] args)
+        {
+            emp4 obj = new emp4();
+
+            Console.WriteLine("Enter empno");
+            obj.empno = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("Enter empname");
+            obj.empname= Console.ReadLine();
+
+            Console.WriteLine("Enter salary");
+            obj.salary = Convert.ToInt32(Console.ReadLine());
+
+            Database_Op db = new Database_Op();
+
+            if(db.Save(obj))
+            {
+                Console.WriteLine("Registration Successfull");
+            }
+            else
+            {
+                Console.WriteLine("Error in Data");
+            }
+
+            Console.Read();
+        }
+    }
+}
+
+
+P3
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+    public static class st_class
+    {
+        public static int x = 0;
+        public static void display()
+        {
+            x++;
+            Console.WriteLine(x);
+        }
+    }
+
+    public class user_class
+    {    
+        public void display()
+        {
+            st_class.display();
+        }
+    }
+
+    class Class12
+    {
+        static void Main(string[] args)
+        {
+            user_class usr = new user_class();
+            usr.display();
+
+            user_class usr1 = new user_class();
+            usr1.display();
+
+            user_class usr2 = new user_class();
+            usr2.display();
+        }
+    }
+}
+
+
+P4
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+    public partial class hr
+    {
+        int x = 0;
+        public void method1()
+        {
+            Console.WriteLine("method1");
+        }
+
+        public void method2()
+        {
+            Console.WriteLine("method1");
+        }
+
+        public void method3()
+        {
+            Console.WriteLine("method1");
+        }
+    }
+
+    public partial class hr
+    {
+        
+        public void method4()
+        {
+            Console.WriteLine("method1",x);
+        }
+
+        public void method5()
+        {
+            Console.WriteLine("method1");
+        }
+
+        public void method6()
+        {
+            Console.WriteLine("method1");
+        }
+    }
+
+
+    class Class13
+    {
+        static void Main(string[] args)
+        {
+            hr obj = new hr();
+            obj.method1();
+          
+        }
+    }
+}
+
+P5
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+    class generic1<T,T1>
+    {
+        T x;
+        T1 y;
+        public generic1(T x, T1 y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+        public void print()
+        {
+            Console.WriteLine(" value x = {0} value y = {1}", x, y);
+        }
+
+    }
+
+    class Class14
+    {
+        static void Main(string[] args)
+        {
+            generic1<string, string> gn = new generic1<string, string>("chennai", "delhi");
+            gn.print();
+
+            generic1<int, int> gn1 = new generic1<int, int>(400, 750);
+            gn1.print();
+           Console.Read();
+        }
+    }
+}
