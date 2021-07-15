@@ -1,0 +1,417 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+    class empdata3
+    {
+        public int empno { get; set; }
+        public string empname { get; set; }
+        public int deptno { get; set; }
+        public string job { get; set; }
+        public int salary { get; set; }
+    }
+
+
+    class dept
+    {
+        public int deptno { get; set; }
+        public string deptname { get; set; }
+        public int locid { get; set; }
+    }
+    class Class18
+    {
+        static void Main(string[] args)
+        {
+            List<empdata3> objls = new List<empdata3>();
+
+            objls.Add(new empdata3 { empno = 1001, empname = "sam",deptno=10, job="manager", salary = 7000 });
+            objls.Add(new empdata3 { empno = 1002, empname = "raj", job = "admin", deptno = 10, salary = 8000 });
+            objls.Add(new empdata3 { empno = 1003, empname = "prashant", job = "admin", deptno = 20, salary = 9000 });
+            objls.Add(new empdata3 { empno = 1004, empname = "john", job = "manager", deptno = 30, salary = 7500 });
+            objls.Add(new empdata3 { empno = 1005, empname = "george", job = "dev", deptno = 30, salary = 9500 });
+
+            List<dept> dlst =new List<dept>();
+            dlst.Add(new dept { deptno = 10, deptname = "Management", locid = 101 });
+            dlst.Add(new dept { deptno = 20, deptname = "Administration", locid = 102 });
+            dlst.Add(new dept { deptno = 30, deptname = "Development", locid = 102 });
+
+
+            var result = from x in objls select x;
+            var result1 = from x in objls select new { x.empno, x.empname, x.salary };
+
+            foreach(var x in result1)
+            {
+                Console.WriteLine("empno = {0} empname = {1} salary = {2}", x.empno, x.empname, x.salary);
+            }
+
+            Console.WriteLine("Enter Employee number to Search");
+            int empno = Convert.ToInt32(Console.ReadLine());
+
+            var result2 = from x in objls where x.empno == empno select x;
+
+            foreach (var x in result2)
+            {
+                Console.WriteLine("empno = {0} empname = {1} job = {2} salary = {3}", x.empno, x.empname,x.job, x.salary);
+            }
+            Console.WriteLine("Using Lambda Expresiion in Linq");
+            empdata3 obj = objls.Where(x => x.empno == empno).FirstOrDefault();
+
+            Console.WriteLine("empno = {0} empname = {1} job = {2} salary = {3}", obj.empno, obj.empname, obj.job, obj.salary);
+
+            Console.WriteLine("Using Joins..");
+
+            var jresult = from x in objls
+                          join y in dlst on x.deptno equals y.deptno 
+                          select new { x.empno, x.empname, x.job,x.deptno, y.deptname, y.locid, x.salary };
+
+            foreach (var x in jresult)
+            {
+                Console.WriteLine("empno = {0} empname = {1} job = {2} deptno = {3} deptname = {4} locid = {5} salary = {6}",
+                    x.empno, x.empname, x.job, x.deptno, x.deptname, x.locid, x.salary);
+            }
+
+            Console.WriteLine("Enter deptname to search");
+            string deptname =Console.ReadLine();
+
+            var jresult1 = from x in objls
+                          join y in dlst on x.deptno equals y.deptno
+                          where y.deptname==deptname
+                          select new { x.empno, x.empname, x.job, x.deptno, y.deptname, y.locid, x.salary };
+
+            foreach (var x in jresult1)
+            {
+                Console.WriteLine("empno = {0} empname = {1} job = {2} deptno = {3} deptname = {4} locid = {5} salary = {6}",
+                    x.empno, x.empname, x.job,x.deptno,x.deptname,x.locid, x.salary);
+            }
+
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+
+    public delegate void del();
+    public delegate int del1(int x, int y);
+    class calc3
+    {
+        public int add(int a, int b)
+        {
+            return a + b;
+        }
+        public int subs(int a, int b)
+        {
+            return a - b;
+        }
+    }
+
+    class Class19
+    {
+
+       
+        static void Main(string[] args)
+        {
+            calc3 cls = new calc3();
+            //del dl = null;
+
+            //dl = cls.add;
+            //dl.Invoke();
+
+            //dl = cls.subs;
+            //dl.Invoke();
+
+            del1 dl = null;
+
+            dl = cls.add;
+            int result = dl.Invoke(20, 30);
+            Console.WriteLine("The Addition is {0}", result);
+
+            dl = cls.subs;
+            int result1 = dl.Invoke(50, 30);
+            Console.WriteLine("The Substraction is {0}", result1);
+
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+    public delegate int del2(int a, int b);
+    class calc4
+    {
+        del2 dl = null;
+        public del2 pointer(int key)
+        {
+            if (key == 1)
+            {
+                dl = add;
+            }
+
+            else if (key == 2)
+            {
+                dl = subs;
+            }
+
+            else if (key == 3)
+            {
+                dl = multi;
+            }
+
+            else if (key == 4)
+            {
+                dl = divs;
+            }
+
+            return dl;
+        }
+
+        private int add(int a, int b)
+        {
+            return a + b;
+        }
+
+        private int subs(int a, int b)
+        {
+            return a - b;
+        }
+
+        private int multi(int a, int b)
+        {
+            return a * b;
+        }
+
+        private int divs(int a, int b)
+        {
+            return a / b;
+        }
+    }
+
+    class Class20
+    {
+        static void Main(string[] args)
+        {
+            calc4 obj = new calc4();
+            int result;
+
+            Console.WriteLine("Enter Fist Number");
+            int fnum = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("Enter Second Number");
+            int snum = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("--Calculator--");
+            Console.WriteLine("1.Addition");
+            Console.WriteLine("2.Substraction");
+            Console.WriteLine("3.Multiplication");
+            Console.WriteLine("4.Division");
+            Console.WriteLine("Press any Key.......");
+            int key = Convert.ToInt32(Console.ReadLine());
+
+            result=obj.pointer(key).Invoke(fnum, snum);
+            Console.WriteLine("The Result is {0}",result);
+
+
+        }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp10
+{
+    public delegate void del3();
+    class multi
+    {
+        public void method1()
+        {
+            Console.WriteLine("Method1");
+        }
+
+        public void method2()
+        {
+            Console.WriteLine("Method2");
+        }
+
+        public void method3()
+        {
+            Console.WriteLine("Method3");
+        }
+
+        public void method4()
+        {
+            Console.WriteLine("Method4");
+        }
+
+        public void method5()
+        {
+            Console.WriteLine("Method5");
+        }
+    }
+    class Class21
+    {
+        static void Main(string[] args)
+        {
+            multi obj = new multi();
+            del3 dl = null;
+
+            dl += obj.method1;
+            dl += obj.method2;
+            dl += obj.method3;
+            dl += obj.method4;
+            dl += obj.method5;
+
+            Console.WriteLine("Enter  1 for execute all methods, 2 for execute 3 methods....");
+            int key = Convert.ToInt32(Console.ReadLine());
+
+            if(key==1)
+            {
+                dl.Invoke();
+            }
+            else if(key==2)
+            {
+                dl -= obj.method1;
+                dl -= obj.method2;
+                dl.Invoke();
+            }
+            else if (key == 3)
+            {
+                dl -= obj.method5;
+                
+                dl.Invoke();
+            }
+
+        }
+    }
+}
+
+
+
+
+
+<Employees>
+
+<employee>
+<empno>1001</empno>
+<empname>sam</empname>
+<salary>8000</salary>
+</employee>
+
+<employee>
+<empno>1002</empno>
+<empname>raj</empname>
+<salary>7000</salary>
+</employee>
+
+<employee>
+<empno>1003</empno>
+<empname>rahul</empname>
+<salary>8000</salary>
+</employee>
+
+<employee>
+<empno>1004</empno>
+<empname>vinod</empname>
+<salary>8700</salary>
+</employee>
+
+
+</Employees>
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+
+namespace ConsoleApp10
+{
+    class Class22
+    {
+        static void Main(string[] args)
+        {
+            DataSet ds = new DataSet();
+            ds.ReadXml(@"C:\Users\ABU\Desktop\hrblocktopics\hrb1.xml");
+
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+
+                Console.WriteLine("Empno = {0}", ds.Tables[0].Rows[i].ItemArray[0].ToString());
+                Console.WriteLine("Empname = {0}", ds.Tables[0].Rows[i].ItemArray[1].ToString());
+                Console.WriteLine("salary = {0}", ds.Tables[0].Rows[i].ItemArray[2].ToString());
+
+                Console.WriteLine();
+            }
+
+
+            List<empdata3> objls = new List<empdata3>();
+
+            objls.Add(new empdata3 { empno = 1001, empname = "sam", deptno = 10, job = "manager", salary = 7000 });
+            objls.Add(new empdata3 { empno = 1002, empname = "raj", job = "admin", deptno = 10, salary = 8000 });
+            objls.Add(new empdata3 { empno = 1003, empname = "prashant", job = "admin", deptno = 20, salary = 9000 });
+            objls.Add(new empdata3 { empno = 1004, empname = "john", job = "manager", deptno = 30, salary = 7500 });
+            objls.Add(new empdata3 { empno = 1005, empname = "george", job = "dev", deptno = 30, salary = 9500 });
+
+            DataSet ds1 = new DataSet();
+
+            DataTable t = new DataTable();
+            t.Columns.Add("empno");
+            t.Columns.Add("empname");
+            t.Columns.Add("deptno");
+            t.Columns.Add("job");
+            t.Columns.Add("salary");
+
+            foreach(empdata3 x in objls)
+            {
+                DataRow dr = t.NewRow();
+                dr[0] = x.empno.ToString();
+                dr[1] = x.empname.ToString();
+                dr[2] = x.deptno.ToString();
+                dr[3] = x.job.ToString();
+                dr[4] = x.salary.ToString();
+                t.Rows.Add(dr);
+            }
+          
+            Console.WriteLine("Dataset Created and list loaded to table");
+            ds1.Tables.Add(t);
+            ds1.WriteXml(@"C:\Users\ABU\Desktop\hrblocktopics\Employees.xml");
+
+           
+          
+            Console.WriteLine("New Record Created");
+
+            //Console.WriteLine("XML File Generated Successfully using list objects..");
+            //Console.WriteLine("Empno = {0}", ds1.Tables[0].Rows[0].ItemArray[0].ToString());
+            //Console.WriteLine("Empname = {0}", ds1.Tables[0].Rows[0].ItemArray[1].ToString());
+            //Console.WriteLine("deptno = {0}", ds1.Tables[0].Rows[0].ItemArray[2].ToString());
+
+        }
+    }
+}
