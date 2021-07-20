@@ -1,0 +1,208 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data.SqlClient;
+using System.Data;
+
+namespace WebApplication42
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!Page.IsPostBack)
+            {
+                DropDownList1.Items.Add("--Select--");
+                DropDownList1.Items.Add("India");
+                DropDownList1.Items.Add("US");
+                DropDownList1.Items.Add("Germany");
+                DropDownList1.Items.Add("Russia");
+            }
+        }
+        SqlConnection con = new SqlConnection("Data Source=DESKTOP-RHC47KF;Initial Catalog=hrblock_db;Integrated Security=True");
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            int fnum = Convert.ToInt32(TextBox1.Text);
+            int snum = Convert.ToInt32(TextBox2.Text);
+            int result = fnum + snum;
+            TextBox3.Text = result.ToString();
+        }
+        User1 obj = new User1();
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            con.Open();
+            string lan=null;
+           
+            obj.username = TextBox4.Text;
+            obj.name = TextBox5.Text;
+            obj.password = TextBox6.Text;
+            obj.address = TextBox8.Text;
+            obj.country = DropDownList1.Text;
+
+            if(RadioButton1.Checked==true)
+            {
+                obj.gender = "Male";
+            }
+            else if(RadioButton2.Checked==true)
+            {
+                obj.gender = "Female";
+            }
+
+            if(CheckBox1.Checked==true)
+            {
+                lan = " java";
+            }
+            if (CheckBox2.Checked == true)
+            {
+                lan = lan + " cobol";
+            }
+            if (CheckBox3.Checked == true)
+            {
+                lan = lan + " c-sharp";
+            }
+
+            obj.language = lan;
+            obj.dob = TextBox9.Text;
+            obj.mail= TextBox10.Text;
+            obj.phone = TextBox11.Text;
+
+
+            SqlCommand cmd = new SqlCommand("insert into user1 values(@username,@name,@password,@address,@country,@gender,@lan,@dob,@mail,@phone)",con);
+            cmd.Parameters.AddWithValue("@username", obj.username);
+            cmd.Parameters.AddWithValue("@name", obj.name);
+            cmd.Parameters.AddWithValue("@password", obj.password);
+            cmd.Parameters.AddWithValue("@address", obj.address);
+            cmd.Parameters.AddWithValue("@country", obj.country);
+            cmd.Parameters.AddWithValue("@gender", obj.gender);
+            cmd.Parameters.AddWithValue("@lan", obj.language);
+            cmd.Parameters.AddWithValue("@dob", obj.dob);
+            cmd.Parameters.AddWithValue("@mail", obj.mail);
+            cmd.Parameters.AddWithValue("@phone", obj.phone);
+
+            cmd.ExecuteNonQuery();         
+            con.Close();
+
+            ViewState["xyz"] = obj;
+            Response.Redirect("WebForm2.aspx");
+        }
+
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+            User1 obj1 = (User1)ViewState["xyz"];
+            Label1.Text = obj1.username;
+            Label2.Text = obj1.name;
+            Label3.Text = obj1.password;
+            Label4.Text = obj1.address;
+            Label5.Text = obj1.country;
+            Label6.Text = obj1.gender;
+            Label7.Text = obj1.language;
+            Label8.Text = obj1.dob;
+            Label9.Text = obj1.mail;
+            Label10.Text = obj1.phone;
+        }
+
+        protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList2.Items.Clear();
+            if(DropDownList1.Text=="India")
+            {
+                DropDownList2.Items.Add("Delhi");
+                DropDownList2.Items.Add("Mumbai");
+                DropDownList2.Items.Add("Chennai");
+                DropDownList2.Items.Add("Bangalore");
+            }
+            else if (DropDownList1.Text == "US")
+            {
+                DropDownList2.Items.Add("Taxes");
+                DropDownList2.Items.Add("Newyork");
+                DropDownList2.Items.Add("Washington");
+                DropDownList2.Items.Add("Boston");
+            }
+        }
+    }
+}
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace WebApplication42
+{
+    public partial class WebForm2 : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            string uname = TextBox1.Text;
+            string pwd = TextBox2.Text;
+            Session["uname"] = TextBox1.Text;
+            if(uname=="sam@123" && pwd=="sam123")
+            {
+                Response.Redirect("WebForm3.aspx");
+            }
+            else
+            {
+                Label1.Text = "Invalid UserName/Password";
+            }
+
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+namespace WebApplication42
+{
+    public partial class WebForm3 : System.Web.UI.Page
+    {
+        SqlConnection con = new SqlConnection("Data Source=DESKTOP-RHC47KF;Initial Catalog=hrblock_db;Integrated Security=True");
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if(!Page.IsPostBack)
+            {
+                con.Open();
+                SqlDataAdapter ad = new SqlDataAdapter("select * from emp",con);
+                DataSet ds = new DataSet();
+                ad.Fill(ds);
+
+                GridView1.DataSource = ds.Tables[0];
+                GridView1.DataBind();
+
+                con.Close();
+                string uname = (string)Session["uname"];
+                Label1.Text = "Welcome " + uname;
+            }
+        }
+
+        protected void LinkButton1_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("WebForm2.aspx");
+        }
+
+        protected void LinkButton2_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("WebForm4.aspx");
+        }
+    }
+}
