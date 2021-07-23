@@ -1,0 +1,184 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace WebApplication42
+{
+    public partial class WebForm7 : System.Web.UI.Page
+    {
+        hrblock_dbEntities db = new hrblock_dbEntities();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if(!Page.IsPostBack)
+            {
+                DropDownList1.Items.Add("--Select--");
+                DropDownList1.Items.Add("10");
+                DropDownList1.Items.Add("20");
+                DropDownList1.Items.Add("30");
+                DropDownList1.Items.Add("40");
+
+                List<emp> ls = db.emps.ToList();
+                DropDownList2.Items.Add("--Select--");
+                foreach (emp x in ls)
+                {
+                    DropDownList2.Items.Add(x.empno.ToString());
+                }
+
+                GridView1.DataSource = ls;
+                GridView1.DataBind();
+            }
+        }
+
+        protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int dno = Convert.ToInt32(DropDownList1.Text);
+            var result = db.emps.Where(x => x.deptno == dno);
+            GridView1.DataSource = result.ToList();
+            GridView1.DataBind();          
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            emp obj = new emp();
+            obj.empno = Convert.ToInt32(TextBox1.Text);
+            obj.empname=TextBox2.Text;
+            obj.job =TextBox3.Text;
+            obj.deptno = Convert.ToInt32(TextBox4.Text);
+            obj.salary = Convert.ToInt32(TextBox5.Text);
+
+            db.emps.Add(obj);
+            db.SaveChanges();
+
+            Label1.Text = "Registered Successfuly...";
+        }
+
+        protected void DropDownList2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TextBox1.Enabled = false;
+            int empno = Convert.ToInt32(DropDownList2.Text);
+            emp obj  = db.emps.Where(x => x.empno == empno).FirstOrDefault();
+
+            //var obj1 = from x in db.emps where x.empno == empno select x;
+         
+                TextBox1.Text = obj.empno.ToString();
+                TextBox2.Text = obj.empname.ToString();
+                TextBox3.Text = obj.job.ToString();
+                TextBox4.Text = obj.deptno.ToString();
+                TextBox5.Text = obj.salary.ToString();
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            int empno = Convert.ToInt32(TextBox1.Text);
+
+            emp obj = db.emps.Where(x => x.empno == empno).FirstOrDefault();
+
+            obj.empno = Convert.ToInt32(TextBox1.Text);
+            obj.empname = TextBox2.Text;
+            obj.job = TextBox3.Text;
+            obj.deptno = Convert.ToInt32(TextBox4.Text);
+            obj.salary = Convert.ToInt32(TextBox5.Text);
+
+            db.SaveChanges();
+
+            Label1.Text = "Update Successfull..";
+        }
+
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+            int empno = Convert.ToInt32(TextBox1.Text);
+            emp obj = db.emps.Where(x => x.empno == empno).FirstOrDefault();
+            db.emps.Remove(obj);
+            db.SaveChanges();
+            Label1.Text = "Deletion Successfull...";
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace WebApplication42
+{
+    public partial class WebForm8 : System.Web.UI.Page
+    {
+        hrblock_dbEntities db = new hrblock_dbEntities();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!Page.IsPostBack)
+            {
+                DropDownList1.Items.Add("--Select--");
+                DropDownList1.Items.Add("10");
+                DropDownList1.Items.Add("20");
+                DropDownList1.Items.Add("30");
+                DropDownList1.Items.Add("40");
+
+                List<dept> ls = db.depts.ToList();
+                DropDownList2.Items.Add("--Select--");
+                foreach (dept x in ls)
+                {
+                    DropDownList2.Items.Add(x.deptno.ToString());
+                }
+
+                GridView1.DataSource = db.getall().ToList();
+                GridView1.DataBind();
+            }
+        }
+
+        protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int dno =Convert.ToInt32(DropDownList1.Text);
+            GridView1.DataSource = db.dept_rec(dno).ToList();
+            GridView1.DataBind();
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            int deptno= Convert.ToInt32(TextBox1.Text);
+            string deptname =TextBox2.Text;
+            int locid = Convert.ToInt32(TextBox3.Text);
+
+            db.reg_dept(deptno, deptname, locid);
+            Label1.Text = "Registration Successfull..";
+
+        }
+
+        protected void DropDownList2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TextBox1.Enabled = false;
+            int dno = Convert.ToInt32(DropDownList2.Text);
+            dept obj = db.depts.Where(x => x.deptno == dno).FirstOrDefault();
+
+            //var obj1 = from x in db.emps where x.empno == empno select x;
+
+            TextBox1.Text = obj.deptno.ToString();
+            TextBox2.Text = obj.deptname.ToString();
+            TextBox3.Text = obj.locid.ToString();
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            int deptno = Convert.ToInt32(TextBox1.Text);
+            string deptname = TextBox2.Text;
+            int locid = Convert.ToInt32(TextBox3.Text);
+
+            db.upd_dept(deptno, deptname, locid);
+            Label1.Text = "Update Successfull..";
+        }
+
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+            int deptno = Convert.ToInt32(TextBox1.Text);
+            db.dlt_dept(deptno);
+            Label1.Text = "Deletion Successfull..";
+        }
+    }
+}
