@@ -1,0 +1,217 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace WebApplication49
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+        string x;
+        List<string> ls = new List<string>();
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+           x = TextBox1.Text;
+
+            ViewState["x"] = x;
+            ls.Add("cochin");
+            ls.Add("chennai");
+            ls.Add("mumbai");
+            ViewState["y"] =ls;
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            ls = (List<string>)ViewState["y"];
+            x = (string)ViewState["x"];
+            TextBox2.Text = x;
+            GridView1.DataSource = ls;
+            GridView1.DataBind();
+        }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace WebApplication49
+{
+    public partial class WebForm2 : System.Web.UI.Page
+    {
+        int x = 1;
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if(!Page.IsPostBack)
+            {
+                TextBox1.Text = x.ToString();
+            }
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            if(Application["x"]!=null)
+            {
+                x =(int)Application["x"] + 1;
+            }
+            TextBox1.Text = x.ToString();
+            Application["x"] = x;
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace WebApplication49
+{
+    public partial class WebForm3 : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            HttpCookie obj = new HttpCookie("user");
+            obj.Values.Add("uname", TextBox1.Text);
+            obj.Values.Add("pwd", TextBox2.Text);
+            Response.Cookies.Add(obj);
+            Response.Redirect("WebForm4.aspx");
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("WebForm4.aspx?uname=" + TextBox3.Text + " &pwd=" + TextBox4.Text);
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace WebApplication49
+{
+    public partial class WebForm4 : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            HttpCookie obj;
+            obj = Request.Cookies["user"];
+            Label1.Text = obj["uname"].ToString();
+            Label2.Text = obj["pwd"].ToString();
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            Label3.Text = Request.QueryString["uname"];
+            Label4.Text = Request.QueryString["pwd"];
+        }
+    }
+}
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Runtime.Serialization;
+using System.ServiceModel;
+using System.ServiceModel.Web;
+
+/// <summary>
+/// Summary description for product
+/// </summary>
+[DataContract]
+public class product1
+{
+    [DataMember]
+    public int prd_id { get; set; }
+    [DataMember]
+    public string prd_name { get; set; }
+    [DataMember]
+    public string prd_type { get; set; }
+    [DataMember]
+    public string prd_desc { get; set; }
+    [DataMember]
+    public string prd_model { get; set; }
+    [DataMember]
+    public int prd_price { get; set; }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.ServiceModel;
+using System.ServiceModel.Web;
+using System.Text;
+
+// NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IService" in both code and config file together.
+[ServiceContract]
+public interface IService
+{
+	[OperationContract]
+	product1 Get_prd_info(int prodid);
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.ServiceModel;
+using System.ServiceModel.Web;
+using System.Text;
+
+// NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Service" in code, svc and config file together.
+public class Service : IService
+{
+    hrblock_dbEntities db = new hrblock_dbEntities();
+    public product1 Get_prd_info(int prodid)
+    {
+        product obj = db.products.Where(x => x.prd_id == prodid).FirstOrDefault();
+        product1 obj1 = new product1();
+
+        obj1.prd_id = obj.prd_id;
+        obj1.prd_name = obj.prd_name;
+        obj1.prd_type = obj.prd_type;
+        obj1.prd_desc = obj.prd_desc;
+        obj1.prd_model = obj.prd_model;
+        obj1.prd_price =Convert.ToInt32( obj.prd_price);
+        return obj1;
+    }
+}
