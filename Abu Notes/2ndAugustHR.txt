@@ -1,0 +1,370 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using WebApplication53.Models;
+
+namespace WebApplication53.Controllers
+{
+    public class EmpController : Controller
+    {
+        // GET: Emp
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public string test()
+        {
+            return "<h1>Hello Welcome to MVC Application Development</h1>";
+        }
+
+        public string test1()
+        {
+            return "<h1>Hello Welcome to MVC Application Development</h1>" +
+                "<h2>Hello Welcome to MVC Application Development</h2>" +
+                "<h3>Hello Welcome to MVC Application Development</h3>" +
+                "<h4>Hello Welcome to MVC Application Development</h4>";
+        }
+
+        public ActionResult test2()
+        {
+            return View();
+        }
+
+        public ActionResult Register()
+        {
+            return View();
+        }
+        DbClass db = new DbClass();
+        public ActionResult Register1(string text1,string text2, string text3, string text4, string text5)
+        {
+            emp1 obj = new emp1();
+            obj.empno = Convert.ToInt32(text1);
+            obj.empname =text2;
+            obj.job =text3;
+            obj.deptno = Convert.ToInt32(text4);
+            obj.salary = Convert.ToInt32(text5);         
+            db.Register(obj);
+            ViewBag.status = "Registered Successfully...";
+            return View("Register");
+        }
+
+        public ActionResult search()
+        {
+            return View();
+        }
+
+        public ActionResult EmpSearch(string select1)
+        {
+            int empno = Convert.ToInt32(select1);
+            emp1 obj = db.EmpSearch(empno);
+
+            ViewBag.empno = obj.empno;
+            ViewBag.empname = obj.empname;
+            ViewBag.job = obj.job;
+            ViewBag.deptno = obj.deptno;
+            ViewBag.salary = obj.salary;
+
+            return View("search");
+        }
+        List<emp1> ls = new List<emp1>();
+        emp1 obj1;
+
+        public ActionResult lsEmp()
+        {
+            obj1 = new emp1();
+            obj1.empno = 1001;
+            obj1.empname = "sam";
+            obj1.job = "manager";
+            obj1.deptno = 10;
+            obj1.salary = 6000;
+            ls.Add(obj1);
+
+            obj1 = new emp1();
+            obj1.empno = 1002;
+            obj1.empname = "rakesh";
+            obj1.job = "dev";
+            obj1.deptno = 20;
+            obj1.salary = 8000;
+            ls.Add(obj1);
+
+            obj1 = new emp1();
+            obj1.empno = 1003;
+            obj1.empname = "raj";
+            obj1.job = "admin";
+            obj1.deptno = 30;
+            obj1.salary = 7000;
+            ls.Add(obj1);
+
+            return View(ls);
+        }
+
+
+        public ActionResult EmpTbLs()
+        {
+            List<emp1> ls = db.EmpTbLs();
+            return View(ls);
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WebApplication53.Models
+{
+    public class emp1
+    {
+        public int empno { get; set; }
+        public string empname { get; set; }
+        public string job { get; set; }
+        public int deptno { get; set; }
+        public int salary { get; set; }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WebApplication53.Models
+{
+    public class DbClass
+    {
+        hrblock_dbEntities db = new hrblock_dbEntities();
+        public void Register(emp1 obj)
+        {
+            emp obj1 = new emp();
+            obj1.empno = obj.empno;
+            obj1.empname = obj.empname;
+            obj1.job = obj.job;
+            obj1.deptno = obj.deptno;
+            obj1.salary = obj.salary;
+
+            db.emps.Add(obj1);
+            db.SaveChanges();
+        }
+
+        public emp1 EmpSearch(int empno)
+        {
+            emp1 obj1 = new emp1();
+            emp obj = db.emps.Where(x => x.empno == empno).FirstOrDefault();
+            obj1.empno = obj.empno;
+            obj1.empname = obj.empname;
+            obj1.job = obj.job;
+            obj1.deptno =Convert.ToInt32( obj.deptno);
+            obj1.salary = Convert.ToInt32(obj.salary);
+            return obj1;
+        }
+
+        public List<emp1> EmpTbLs()
+        {
+            List<emp> ls = db.emps.ToList();
+            List<emp1> ls1 = new List<emp1>();
+            emp1 obj1;
+            foreach(emp obj in ls)
+            {
+                obj1 = new emp1();
+                obj1.empno = obj.empno;
+                obj1.empname = obj.empname;
+                obj1.job = obj.job;
+                obj1.deptno = Convert.ToInt32(obj.deptno);
+                obj1.salary = Convert.ToInt32(obj.salary);
+                ls1.Add(obj1);
+            }
+            return ls1;
+        }
+    }
+}
+
+
+
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>search</title>
+</head>
+<body>
+    <form id="form1" action="EmpSearch" method="post">
+        <table border="1" width="60%">
+            <tr>
+                <td>Enter Empno To Search</td>
+                <td><select id="Select1" name="select1" onchange=this.form.submit()>
+    <option>--Select--</option>
+    <option>1001</option>
+    <option>1002</option>
+    <option>1003</option>
+    <option>1004</option>
+
+</select></td>
+               
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Empno</td>
+                <td><input id="Text1" type="text" value=@ViewBag.empno /></td>
+            </tr>
+
+            <tr>
+                <td>Empname</td>
+                <td><input id="Text1" type="text" value=@ViewBag.empname /></td>
+            </tr>
+
+            <tr>
+                <td>Job</td>
+                <td><input id="Text1" type="text" value=@ViewBag.job /></td>
+            </tr>
+
+            <tr>
+                <td>Deptno</td>
+                <td><input id="Text1" type="text" value=@ViewBag.deptno /></td>
+            </tr>
+
+            <tr>
+                <td>Salary</td>
+                <td><input id="Text1" type="text" value=@ViewBag.salary /></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>
+
+
+
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Register</title>
+</head>
+<body>
+    <form id="form1" action="Register1" method="post">
+        <table width="50%" border="1" bgcolor="Yellow">
+
+            <tr>
+                <td>Empno</td>
+                <td><input type="text" id="text1" name="text1" /></td>
+            </tr>
+
+            <tr>
+                <td>Empname</td>
+                <td><input type="text" id="text2" name="text2" /></td>
+            </tr>
+
+            <tr>
+                <td>Job</td>
+                <td><input type="text" id="text3" name="text3" /></td>
+            </tr>
+
+            <tr>
+                <td>Deptno</td>
+                <td><input type="text" id="text4" name="text4" /></td>
+            </tr>
+
+            <tr>
+                <td>Salary</td>
+                <td><input type="text" id="text5" name="text5" /></td>
+            </tr>
+
+            <tr>
+                <td><input type="submit" value="Register" /></td>
+                <td>@ViewBag.status</td>
+            </tr>
+
+        </table>
+    </form>
+</body>
+</html>
+
+
+@model IEnumerable<WebApplication53.Models.emp1> 
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>lsEmp</title>
+</head>
+<body>
+  <table width="70%" border="1">
+      <tr>
+          <th>Empno</th><th>Empname</th><th>Job</th><th>Deptno</th><th>Salary</th>
+      </tr>
+      @foreach(var x in Model)
+            {
+  <tr>
+      <td>@x.empno</td>
+      <td>@x.empname</td>
+      <td>@x.job</td>
+      <td>@x.deptno</td>
+      <td>@x.salary</td>
+  </tr>
+            }
+  </table>
+</body>
+</html>
+
+
+
+
+@model IEnumerable<WebApplication53.Models.emp1>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>EmpTbLs</title>
+</head>
+<body>
+    <table width="70%" border="1">
+        <tr>
+            <th>Empno</th>
+            <th>Empname</th>
+            <th>Job</th>
+            <th>Deptno</th>
+            <th>Salary</th>
+        </tr>
+        @foreach (var x in Model)
+        {
+            <tr>
+                <td>@x.empno</td>
+                <td>@x.empname</td>
+                <td>@x.job</td>
+                <td>@x.deptno</td>
+                <td>@x.salary</td>
+            </tr>
+        }
+    </table>
+</body>
+</html>
+
