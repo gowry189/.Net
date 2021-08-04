@@ -1,0 +1,269 @@
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace WebApplication60.Controllers
+{
+    public class EmployeeController1 : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult test()
+        {
+            return View();
+        }
+
+        public IActionResult test1()
+        {
+            return View();
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+        Models.DataClass db = new Models.DataClass();
+        public IActionResult Register1(Models.User1 obj)
+        {
+            db.create(obj);
+            ViewBag.status = "Registered Successfully";
+            return View("Register");
+        }
+
+
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+
+namespace WebApplication60.Models
+{
+    public class DataClass
+    {
+        SqlConnection con = new SqlConnection("Data Source=DESKTOP-RHC47KF;Initial Catalog=hrblock_db;Integrated Security=True");
+        public void create(Models.User1 obj)
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("insert into user2 values(@uid,@pwd,@age,@add,@eml,@phn)",con);
+            cmd.Parameters.AddWithValue("@uid", obj.UserId);
+            cmd.Parameters.AddWithValue("@pwd", obj.Password);
+            cmd.Parameters.AddWithValue("@age", obj.age);
+            cmd.Parameters.AddWithValue("@add", obj.Address);
+            cmd.Parameters.AddWithValue("@eml", obj.email);
+            cmd.Parameters.AddWithValue("@phn", obj.phone);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace WebApplication60.Models
+{
+    public class User1
+    {      
+        [Required(ErrorMessage ="*UserId cannot be Empty")]
+        public string UserId { get; set; }
+        [Required(ErrorMessage = "*Password cannot be Empty")]       
+        public string Password { get; set; }
+        [Compare("Password",ErrorMessage ="Password Mismatch")]
+        public string R_Password { get; set; }
+        [Range(18,60,ErrorMessage ="age must between 18 and 60")]
+        public int  age{ get; set; }
+        [StringLength(200,MinimumLength =10)]
+        public string Address { get; set; }
+        public string email { get; set; }
+        [StringLength(10,ErrorMessage ="phone number must be in 10 digit")]
+        public string phone { get; set; }
+
+    }
+}
+
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model WebApplication60.Models.User1 
+@{
+   
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+}
+@using(Html.BeginForm("Register1","EmployeeController1",FormMethod.Post))
+{ 
+<table>
+    <tr>
+        <td>@Html.LabelFor(x => x.UserId)</td>
+        <td>@Html.TextBoxFor(x => x.UserId)</td>
+        <td>@Html.ValidationMessageFor(x=>x.UserId)</td>
+    </tr>
+
+    <tr>
+        <td>@Html.LabelFor(x => x.Password)</td>
+        <td>@Html.TextBoxFor(x => x.Password)</td>
+        <td>@Html.ValidationMessageFor(x => x.Password)</td>
+    </tr>
+
+    <tr>
+        <td>@Html.LabelFor(x => x.R_Password)</td>
+        <td>@Html.TextBoxFor(x => x.R_Password)</td>
+        <td>@Html.ValidationMessageFor(x => x.R_Password)</td>
+    </tr>
+
+    <tr>
+        <td>@Html.LabelFor(x => x.age)</td>
+        <td>@Html.TextBoxFor(x => x.age)</td>
+        <td>@Html.ValidationMessageFor(x => x.age)</td>
+    </tr>
+
+    <tr>
+        <td>@Html.LabelFor(x => x.Address)</td>
+        <td>@Html.TextBoxFor(x => x.Address)</td>
+        <td>@Html.ValidationMessageFor(x => x.Address)</td>
+    </tr>
+
+    <tr>
+        <td>@Html.LabelFor(x => x.email)</td>
+        <td>@Html.TextBoxFor(x => x.email)</td>
+        <td>@Html.ValidationMessageFor(x => x.email)</td>
+    </tr>
+
+    <tr>
+        <td>@Html.LabelFor(x => x.phone)</td>
+        <td>@Html.TextBoxFor(x => x.phone)</td>
+        <td>@Html.ValidationMessageFor(x => x.phone)</td>
+    </tr>
+
+    <tr>
+        <td><input id="Submit1" type="submit" value="submit" /></td>
+        <td>@ViewBag.status</td>
+    </tr>
+</table>
+}
+
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+  
+}
+<table width="50%" border="1">
+    <tr colspan="2">
+        <td>Login Form</td>     
+    </tr>
+    <tr>
+        <td>UserName</td>
+        <td><input id="Text1" type="text" name="text1" /></td>
+    </tr>
+
+    <tr>
+        <td>Password</td>
+        <td><input id="Password1" type="password" name="password1" /></td>
+    </tr>
+
+    <tr>
+        <td><input id="Submit1" type="submit" value="Login" /></td>
+        <td>@ViewBag.status</td>
+    </tr>
+</table>
+
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <style type="text/css">
+        .auto-style1 {
+            width: 100%;
+            height: 528px;
+        }
+
+        .auto-style4 {
+            height: 94px;
+            background-color: #CCCCFF;
+        }
+
+        .auto-style5 {
+            width: 176px;
+            height: 397px;
+        }
+
+        .auto-style6 {
+            height: 397px;
+        }
+
+        .auto-style7 {
+            font-size: xx-large;
+            color: #CC0000;
+        }
+
+        .auto-style8 {
+            font-size: large;
+            color: #0000CC;
+        }
+
+        .auto-style9 {
+            color: #0000CC;
+            background-color: #CCCCFF;
+        }
+    </style>
+</head>
+<body>
+    <table class="auto-style1">
+        <tr>
+            <td class="auto-style4" colspan="2">
+                <strong><span class="auto-style7">HRBlock Limited</span></strong><br />
+                <strong>
+                    <span class="auto-style8">Kazhakoottam, Trivandrum</span><br class="auto-style8" />
+                    <span class="auto-style8">Kerala</span>
+                </strong>
+            </td>
+        </tr>
+        <tr>
+            <td class="auto-style5" style="background-color: #CCCCFF">
+                @Html.ActionLink("Home", "test1")<br />
+                <br />
+                @Html.ActionLink("Login", "Login")<br />
+                <br />
+                @Html.ActionLink("Registration", "Register")<br />
+                <br />
+                @Html.ActionLink("Display", "Display")<br />
+                <br />
+                @Html.ActionLink("ContactUs", "ContactUs")
+            </td>
+            <td class="auto-style6">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;@RenderBody()</td>
+        </tr>
+        <tr>
+            <td class="auto-style9" colspan="2"><em><strong>Dealing with Tax Solutions and Finacial Services </strong></em></td>
+        </tr>
+    </table>
+  
+</body>
+</html>
+
