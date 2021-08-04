@@ -1,0 +1,579 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using WebApplication53.Models;
+
+namespace WebApplication53.Controllers
+{
+    public class EmpController : Controller
+    {
+        // GET: Emp
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public string test()
+        {
+            return "<h1>Hello Welcome to MVC Application Development</h1>";
+        }
+
+        public string test1()
+        {
+            return "<h1>Hello Welcome to MVC Application Development</h1>" +
+                "<h2>Hello Welcome to MVC Application Development</h2>" +
+                "<h3>Hello Welcome to MVC Application Development</h3>" +
+                "<h4>Hello Welcome to MVC Application Development</h4>";
+        }
+
+        public ActionResult test2()
+        {
+            return View();
+        }
+
+        public ActionResult Register()
+        {
+            return View();
+        }
+        DbClass db = new DbClass();
+        public ActionResult Register1(string text1,string text2, string text3, string text4, string text5)
+        {
+            emp1 obj = new emp1();
+            obj.empno = Convert.ToInt32(text1);
+            obj.empname =text2;
+            obj.job =text3;
+            obj.deptno = Convert.ToInt32(text4);
+            obj.salary = Convert.ToInt32(text5);         
+            db.Register(obj);
+            ViewBag.status = "Registered Successfully...";
+            return View("Register");
+        }
+
+        public ActionResult search()
+        {
+            return View();
+        }
+
+        public ActionResult EmpSearch(string select1)
+        {
+            int empno = Convert.ToInt32(select1);
+            emp1 obj = db.EmpSearch(empno);
+
+            ViewBag.empno = obj.empno;
+            ViewBag.empname = obj.empname;
+            ViewBag.job = obj.job;
+            ViewBag.deptno = obj.deptno;
+            ViewBag.salary = obj.salary;
+
+            return View("search");
+        }
+        List<emp1> ls = new List<emp1>();
+        emp1 obj1;
+
+        public ActionResult lsEmp()
+        {
+            obj1 = new emp1();
+            obj1.empno = 1001;
+            obj1.empname = "sam";
+            obj1.job = "manager";
+            obj1.deptno = 10;
+            obj1.salary = 6000;
+            ls.Add(obj1);
+
+            obj1 = new emp1();
+            obj1.empno = 1002;
+            obj1.empname = "rakesh";
+            obj1.job = "dev";
+            obj1.deptno = 20;
+            obj1.salary = 8000;
+            ls.Add(obj1);
+
+            obj1 = new emp1();
+            obj1.empno = 1003;
+            obj1.empname = "raj";
+            obj1.job = "admin";
+            obj1.deptno = 30;
+            obj1.salary = 7000;
+            ls.Add(obj1);
+
+            return View(ls);
+        }
+
+
+        public ActionResult EmpTbLs()
+        {
+            List<emp1> ls = db.EmpTbLs();
+            return View(ls);
+        }
+
+        public ActionResult UpdSearch()
+        {
+            return View();
+        }
+
+        public ActionResult UpdEmp1(string text1)
+        {
+            int empno = Convert.ToInt32(text1);
+           
+            emp1 obj = db.EmpSearch(empno);
+
+            ViewBag.empno = obj.empno;
+            ViewBag.empname = obj.empname;
+            ViewBag.job = obj.job;
+            ViewBag.deptno = obj.deptno;
+            ViewBag.salary = obj.salary;
+
+            return View();
+        }
+
+        public ActionResult Upd(string text1,string text2,string text3,string text4,string text5)
+        {
+            emp obj = new emp();
+            obj.empno = Convert.ToInt32(text1);
+            obj.empname =text2;
+            obj.job = text3;
+            obj.deptno = Convert.ToInt32(text4);
+            obj.salary = Convert.ToInt32(text5);
+
+            db.Update1(obj);
+            ViewBag.status2 = "Update Successfull";
+            return View("UpdEmp1");
+        }
+
+        public ActionResult DelEmp()
+        {
+            return View();
+        }
+
+        public ActionResult DelEmp1(string text1)
+        {
+            int empno = Convert.ToInt32(text1);
+            db.DelEmp(empno);
+            ViewBag.status3 = "Deletion Successfull...";
+            return View("DelEmp");
+        }
+
+
+        public ActionResult UpdModelSearch()
+        {
+            return View();
+        }
+
+        public ActionResult UpdModelEmp1(string text1)
+        {
+            int empno = Convert.ToInt32(text1);
+
+            emp1 obj = db.EmpSearch(empno);        
+            return View(obj);
+        }
+
+        public ActionResult update1(emp1 obj)
+        {
+            db.Update2(obj);
+            ViewBag.status4 = "Update Successfull";
+            return View("UpdModelSearch");
+        }
+
+    }
+}
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WebApplication53.Models
+{
+    public class DbClass
+    {
+        hrblock_dbEntities db = new hrblock_dbEntities();
+        public void Register(emp1 obj)
+        {
+            emp obj1 = new emp();
+            obj1.empno = obj.empno;
+            obj1.empname = obj.empname;
+            obj1.job = obj.job;
+            obj1.deptno = obj.deptno;
+            obj1.salary = obj.salary;
+
+            db.emps.Add(obj1);
+            db.SaveChanges();
+        }
+
+        public emp1 EmpSearch(int empno)
+        {
+            emp1 obj1 = new emp1();
+            emp obj = db.emps.Where(x => x.empno == empno).FirstOrDefault();
+            obj1.empno = obj.empno;
+            obj1.empname = obj.empname;
+            obj1.job = obj.job;
+            obj1.deptno =Convert.ToInt32( obj.deptno);
+            obj1.salary = Convert.ToInt32(obj.salary);
+            return obj1;
+        }
+
+        public List<emp1> EmpTbLs()
+        {
+            List<emp> ls = db.emps.ToList();
+            List<emp1> ls1 = new List<emp1>();
+            emp1 obj1;
+            foreach(emp obj in ls)
+            {
+                obj1 = new emp1();
+                obj1.empno = obj.empno;
+                obj1.empname = obj.empname;
+                obj1.job = obj.job;
+                obj1.deptno = Convert.ToInt32(obj.deptno);
+                obj1.salary = Convert.ToInt32(obj.salary);
+                ls1.Add(obj1);
+            }
+            return ls1;
+        }
+
+        public void Update1(emp obj)
+        {
+            emp obj1 = db.emps.Where(x => x.empno == obj.empno).FirstOrDefault();
+            obj1.empno = obj.empno;
+            obj1.empname = obj.empname;
+            obj1.job = obj.job;
+            obj1.deptno = obj.deptno;
+            obj1.salary = obj.salary;
+
+            db.SaveChanges();
+        }
+
+        public void DelEmp(int empno)
+        {
+            emp obj1 = db.emps.Where(x => x.empno == empno).FirstOrDefault();
+            db.emps.Remove(obj1);
+            db.SaveChanges();
+        }
+
+        public void Update2(emp1 obj)
+        {
+            emp obj1 = db.emps.Where(x => x.empno == obj.empno).FirstOrDefault();
+            obj1.empno = obj.empno;
+            obj1.empname = obj.empname;
+            obj1.job = obj.job;
+            obj1.deptno = obj.deptno;
+            obj1.salary = obj.salary;
+
+            db.SaveChanges();
+        }
+
+
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WebApplication53.Models
+{
+    public class emp1
+    {
+        public int empno { get; set; }
+        public string empname { get; set; }
+        public string job { get; set; }
+        public int deptno { get; set; }
+        public int salary { get; set; }
+    }
+}
+
+
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UpdModelSearch</title>
+</head>
+<body>
+    <form id="form1" action="UpdModelEmp1" method="post">
+        <table border="1" width="60%">
+            <tr>
+                <td>Enter Empno To Update</td>
+                <td>
+                    <input id="Text1" type="text" name="text1" />
+                </td>
+                <td><input id="Submit1" type="submit" value="EditRecord" /></td>
+            </tr>
+        </table>
+    </form>
+    @ViewBag.status4
+
+</body>
+</html>
+
+@model WebApplication53.Models.emp1
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UpdModelEmp1</title>
+</head>
+<body>
+   @using(Html.BeginForm("update1","Emp",FormMethod.Post))
+            {
+    <table width="50%" border="1">
+        <tr>
+            <td>@Html.LabelFor(x => x.empno)</td>
+            <td>@Html.TextBoxFor(x => x.empno)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.LabelFor(x => x.empname)</td>
+            <td>@Html.TextBoxFor(x => x.empname)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.LabelFor(x => x.job)</td>
+            <td>@Html.TextBoxFor(x => x.job)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.LabelFor(x => x.deptno)</td>
+            <td>@Html.TextBoxFor(x => x.deptno)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.LabelFor(x => x.salary)</td>
+            <td>@Html.TextBoxFor(x => x.salary)</td>
+        </tr>
+
+        <tr>
+            <td><input id="Submit1" type="submit" value="UpdateRec" /></td>
+            <td></td>
+        </tr>
+
+    </table>
+            }
+</body>
+</html>
+
+
+
+
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UpdSearch</title>
+</head>
+<body>
+    <form id="form1" action="UpdEmp1" method="post">
+        <table border="1" width="60%">
+            <tr>
+                <td>Enter Empno To Update</td>
+                <td>
+                    <input id="Text1" type="text" name="text1" />
+                </td>
+                <td><input id="Submit1" type="submit" value="EditRecord" /></td>
+            </tr>
+        </table>
+        </form>
+       
+    
+</body>
+</html>
+
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UpdEmp1</title>
+</head>
+<body>
+    <form id="frm1" action="Upd" method="post">
+        <table>
+            <tr>
+                <td>Empno</td>
+                <td><input id="Text1" type="text" name="text1" value=@ViewBag.empno /></td>
+            </tr>
+
+            <tr>
+                <td>Empname</td>
+                <td><input id="Text1" type="text" name="text2" value=@ViewBag.empname /></td>
+            </tr>
+
+            <tr>
+                <td>Job</td>
+                <td><input id="Text1" type="text" name="text3" value=@ViewBag.job /></td>
+            </tr>
+
+            <tr>
+                <td>Deptno</td>
+                <td><input id="Text1" type="text" name="text4" value=@ViewBag.deptno /></td>
+            </tr>
+
+            <tr>
+                <td>Salary</td>
+                <td><input id="Text1" type="text" name="text5" value=@ViewBag.salary /></td>
+            </tr>
+
+            <tr>
+                <td><input id="Submit1" type="submit" value="Update" /></td>
+                <td>@ViewBag.status2</td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>
+
+
+
+
+
+2nd SESSION
+
+OPEN NUGET CONSOLE WINDOW
+install-package EntityFramework
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+using System.Data.SqlClient;
+
+namespace WebApplication59.Models
+{
+    public class emp
+    {
+        [Key]
+        public int empno { get; set; }
+        public string empname { get; set; }
+        public string job { get; set; }
+        public int deptno { get; set; }
+        public int salary { get; set; }
+    }
+}
+
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  For more information on how to configure your ASP.NET application, please visit
+  https://go.microsoft.com/fwlink/?LinkId=301880
+  -->
+<configuration>
+  <configSections>
+    <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
+    <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+  </configSections>
+  <appSettings>
+    <add key="webpages:Version" value="3.0.0.0" />
+    <add key="webpages:Enabled" value="false" />
+    <add key="ClientValidationEnabled" value="true" />
+    <add key="UnobtrusiveJavaScriptEnabled" value="true" />
+  </appSettings>
+  <system.web>
+    <compilation debug="true" targetFramework="4.7.2" />
+    <httpRuntime targetFramework="4.7.2" />
+  </system.web>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Antlr3.Runtime" publicKeyToken="eb42632606e9261f" />
+        <bindingRedirect oldVersion="0.0.0.0-3.5.0.2" newVersion="3.5.0.2" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" />
+        <bindingRedirect oldVersion="0.0.0.0-12.0.0.0" newVersion="12.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Optimization" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-1.1.0.0" newVersion="1.1.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="0.0.0.0-1.6.5135.21930" newVersion="1.6.5135.21930" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Helpers" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.WebPages" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-5.2.7.0" newVersion="5.2.7.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+  <system.codedom>
+    <compilers>
+      <compiler language="c#;cs;csharp" extension=".cs" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:default /nowarn:1659;1699;1701" />
+      <compiler language="vb;vbs;visualbasic;vbscript" extension=".vb" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:default /nowarn:41008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+" />
+    </compilers>
+  </system.codedom>
+  <entityFramework>
+    <providers>
+      <provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" />
+    </providers>
+  </entityFramework>
+	<connectionStrings>
+		<add name="con" connectionString="Data Source=DESKTOP-RHC47KF;Initial Catalog=hrblock1_db;Integrated Security=True" providerName="System.Data.SqlClient" />
+	</connectionStrings>
+</configuration>
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Web;
+
+namespace WebApplication59.Models
+{
+    public class DbConnectEntities1:DbContext
+    {
+        public DbConnectEntities1():base("Name=con")
+        {
+
+        }
+        public DbSet<emp> emps { get; set; }
+    }
+}
+
+Migration Command
+
+Enable-Migrations -ContextTypeName DbConnectEntities1
+Add-Migration mDbConnectEntities1
+Update-Database -verbose
+
+
