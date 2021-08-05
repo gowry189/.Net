@@ -1,0 +1,360 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+using System.Data;
+
+namespace WebApplication60.Models
+{
+    public class DataClass
+    {
+        SqlConnection con = new SqlConnection("Data Source=DESKTOP-RHC47KF;Initial Catalog=hrblock_db;Integrated Security=True");
+        public void create(Models.User1 obj)
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("insert into user2 values(@uid,@pwd,@age,@add,@eml,@phn)",con);
+            cmd.Parameters.AddWithValue("@uid", obj.UserId);
+            cmd.Parameters.AddWithValue("@pwd", obj.Password);
+            cmd.Parameters.AddWithValue("@age", obj.age);
+            cmd.Parameters.AddWithValue("@add", obj.Address);
+            cmd.Parameters.AddWithValue("@eml", obj.email);
+            cmd.Parameters.AddWithValue("@phn", obj.phone);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+
+        public void EmpRegister(Models.emp1 obj)
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("insert into emp values(@empno,@empname,@job,@deptno,@salary)", con);
+            cmd.Parameters.AddWithValue("@empno", obj.empno);
+            cmd.Parameters.AddWithValue("@empname", obj.empname);
+            cmd.Parameters.AddWithValue("@job", obj.job);
+            cmd.Parameters.AddWithValue("@deptno", obj.deptno);
+            cmd.Parameters.AddWithValue("@salary", obj.salary);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        public List<emp1> displayAll()
+        {
+            List<emp1> ls = new List<emp1>();
+            con.Open();
+            SqlDataAdapter ad = new SqlDataAdapter("select * from emp",con);
+            DataSet ds = new DataSet();
+            ad.Fill(ds);
+            emp1 obj;
+            for(int i=0;i<ds.Tables[0].Rows.Count;i++)
+            {
+                obj = new emp1();
+                obj.empno = Convert.ToInt32(ds.Tables[0].Rows[i].ItemArray[0].ToString());
+                obj.empname =ds.Tables[0].Rows[i].ItemArray[1].ToString();
+                obj.job =ds.Tables[0].Rows[i].ItemArray[2].ToString();
+                obj.deptno = Convert.ToInt32(ds.Tables[0].Rows[i].ItemArray[3].ToString());
+                obj.salary = Convert.ToInt32(ds.Tables[0].Rows[i].ItemArray[4].ToString());
+                ls.Add(obj);
+            }
+
+            con.Close();
+            return ls;
+        }
+
+        public emp1 empObj(int empno)
+        {
+            emp1 obj = new emp1();
+            con.Open();
+            SqlDataAdapter ad = new SqlDataAdapter("select * from emp where empno="+empno+"", con);
+            DataSet ds = new DataSet();
+            ad.Fill(ds);
+
+            obj.empno = Convert.ToInt32(ds.Tables[0].Rows[0].ItemArray[0].ToString());
+            obj.empname = ds.Tables[0].Rows[0].ItemArray[1].ToString();
+            obj.job = ds.Tables[0].Rows[0].ItemArray[2].ToString();
+            obj.deptno = Convert.ToInt32(ds.Tables[0].Rows[0].ItemArray[3].ToString());
+            obj.salary = Convert.ToInt32(ds.Tables[0].Rows[0].ItemArray[4].ToString());
+
+            con.Close();
+            return obj;
+        }
+
+        public void Delete1(int empno)
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("delete from emp where empno="+empno+"",con);
+           
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        public void update11(emp1 obj)
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("update emp set empno=@empno,empname=@empname,job=@job,deptno=@deptno,salary=@salary where empno=@empno", con);
+            cmd.Parameters.AddWithValue("@empno", obj.empno);
+            cmd.Parameters.AddWithValue("@empname", obj.empname);
+            cmd.Parameters.AddWithValue("@job", obj.job);
+            cmd.Parameters.AddWithValue("@deptno", obj.deptno);
+            cmd.Parameters.AddWithValue("@salary", obj.salary);
+           
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+    }
+}
+
+
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace WebApplication60.Controllers
+{
+    public class EmployeeController1 : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult test()
+        {
+            return View();
+        }
+
+        public IActionResult test1()
+        {
+            return View();
+        }
+
+        public IActionResult test2()
+        {
+            return View();
+        }
+        public IActionResult insert_rec(string Text1,string Text2, string Text3)
+        {
+            return View();
+        }
+
+        public IActionResult update_rec(string Text1, string Text2, string Text3)
+        {
+            return View();
+        }
+
+        public IActionResult delete_rec(string Text1, string Text2, string  Text3)
+        {
+            return View();
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult EmpRegister()
+        {
+          
+            return View();
+        }
+
+        public IActionResult EmpRegister1(Models.emp1 obj)
+        {
+            db.EmpRegister(obj);
+            return RedirectToAction("Display");
+        }
+
+        public IActionResult login1(string text1, string password1)
+        {
+            if (text1 == "sam@123" && password1 == "sam123")
+            {
+                return RedirectToAction("Display");
+            }
+            else
+            {
+                return View("Login");
+            }
+        }
+
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+        Models.DataClass db = new Models.DataClass();
+        public IActionResult Register1(Models.User1 obj)
+        {
+            db.create(obj);
+            ViewBag.status = "Registered Successfully";
+            return View("Register");
+        }
+
+        public ActionResult Display()
+        {
+            List<Models.emp1> ls = db.displayAll();
+            return View(ls);
+        }
+        public ActionResult view_det(string empno)
+        {
+            int eno = Convert.ToInt32(empno);
+            Models.emp1 obj = db.empObj(eno);
+            return View(obj);
+        }
+
+        public ActionResult Update1(string empno)
+        {
+            int eno = Convert.ToInt32(empno);
+            Models.emp1 obj = db.empObj(eno);
+            return View(obj);
+        }
+
+        public ActionResult Update11(Models.emp1 obj)
+        {
+            db.update11(obj);
+          
+            return RedirectToAction("Display");
+        }
+
+        public ActionResult Delete1(string empno)
+        {
+            int eno = Convert.ToInt32(empno);
+            db.Delete1(eno);
+            return RedirectToAction("display");
+        }
+    }
+}
+
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<WebApplication60.Models.emp1>
+@{
+}
+<h1>Employee Details</h1>
+@Html.ActionLink("New Record","EmpRegister")
+<table border="1" width="70%">
+    <tr>
+        <th>Empno</th>
+        <th>Empname</th>
+        <th>job</th>
+        <th>deptno</th>
+        <th>salary</th>
+    </tr>
+
+    @foreach (var x in Model)
+    {
+<tr>
+    <td>@Html.DisplayFor(model => x.empno)</td>
+    <td>@Html.DisplayFor(model => x.empname)</td>
+    <td>@Html.DisplayFor(model => x.job)</td>
+    <td>@Html.DisplayFor(model => x.deptno)</td>
+    <td>@Html.DisplayFor(model => x.salary)</td>
+    <td>@Html.ActionLink("View Details", "view_det", new { empno = x.empno })</td>
+    <td>@Html.ActionLink("UpdateRec", "Update1", new { empno = x.empno })</td>
+    <td>@Html.ActionLink("DeleteRec", "Delete1", new { empno = x.empno },new { onclick = "return confirm('are you sure ? ');"}  )</td>
+</tr>
+    }
+</table>
+
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model WebApplication60.Models.emp1
+@{
+}
+<h1>Employee Registration Form</h1>
+
+@using (Html.BeginForm("EmpRegister1", "EmployeeController1", FormMethod.Post))
+{
+<table>
+    <tr>
+        <td>Empno</td>
+        <td>@Html.TextBoxFor(x => x.empno)</td>
+    </tr>
+
+    <tr>
+        <td>Empname</td>
+        <td>@Html.TextBoxFor(x => x.empname)</td>
+    </tr>
+
+    <tr>
+        <td>Job</td>
+        <td>@Html.TextBoxFor(x => x.job)</td>
+    </tr>
+
+    <tr>
+        <td>Deptno</td>
+        <td>@Html.TextBoxFor(x => x.deptno)</td>
+    </tr>
+
+    <tr>
+        <td>Salary</td>
+        <td>@Html.TextBoxFor(x => x.salary)</td>
+    </tr>
+
+    <tr>
+        <td><input id="Submit1" type="submit" value="Register" /></td>
+        <td></td>
+    </tr>
+</table>
+}
+
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model WebApplication60.Models.emp1
+@{
+}
+<h1>Employee Details</h1>
+@using (Html.BeginForm("Update11", "EmployeeController1", FormMethod.Post))
+{
+<table border="1" width="70%">
+    <tr>
+        <th>Empno</th>
+        <th>Empname</th>
+        <th>job</th>
+        <th>deptno</th>
+        <th>salary</th>
+    </tr>
+    <tr>
+        <td>@Html.TextBoxFor(x => x.empno)</td>
+        <td>@Html.TextBoxFor(x => x.empname)</td>
+        <td>@Html.TextBoxFor(x => x.job)</td>
+        <td>@Html.TextBoxFor(x => x.deptno)</td>
+        <td>@Html.TextBoxFor(x => x.salary)</td>
+        <td><input id="Submit1" type="submit" value="Update" /></td>
+    </tr>
+    
+</table>
+}
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model WebApplication60.Models.emp1
+@{
+}
+<h1>Employee Details</h1>
+<table border="1" width="70%">
+    <tr>
+        <th>Empno</th>
+        <th>Empname</th>
+        <th>job</th>
+        <th>deptno</th>
+        <th>salary</th>
+    </tr>
+   <tr>
+            <td>@Html.DisplayFor(x => x.empno)</td>
+            <td>@Html.DisplayFor(x => x.empname)</td>
+            <td>@Html.DisplayFor(x => x.job)</td>
+            <td>@Html.DisplayFor(x => x.deptno)</td>
+            <td>@Html.DisplayFor(x => x.salary)</td>           
+        </tr>
+    }
+</table>
+@Html.ActionLink("Back to Home","Display")
