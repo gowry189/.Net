@@ -1,0 +1,127 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+
+namespace WebApplication65.Controllers
+{
+    public class ValuesController : ApiController
+    {
+        // GET api/values
+      
+        hrblock_dbEntities db = new hrblock_dbEntities();
+        public IEnumerable<emp5> Get()
+        {
+            return db.emp5.ToList();          
+        }
+
+        // GET api/values/5
+        public emp5 Get(int id)
+        {
+            emp5 obj1 = db.emp5.Where(x => x.empno == id).FirstOrDefault();
+            return obj1;
+        }
+
+        // POST api/values
+      
+        [HttpPost]
+        [ActionName("Emppost1")]
+        //[Route("[Emppost1]")]
+        public void Emppost1([FromBody] emp5 obj)
+        {
+            db.emp5.Add(obj);
+            db.SaveChanges();
+        }
+        //[ActionName("Deptpost1")]
+        //[HttpPost]
+
+        ////[Route("[Deptpost1]")]
+        //public void Deptpost1([FromBody] dept obj)
+        //{
+        //    db.depts.Add(obj);
+        //    db.SaveChanges();
+        //}
+
+        // PUT api/values/5
+        public void Put(int id, [FromBody] emp5 obj)
+        {
+            emp5 obj1 = db.emp5.Where(x => x.empno == id).FirstOrDefault();
+            obj1.empno = obj.empno;
+            obj1.empname = obj.empname;
+            obj1.salary = obj.salary;
+            db.SaveChanges();
+        }
+
+        // DELETE api/values/5
+        public void Delete(int id)
+        {
+            emp5 obj1 = db.emp5.Where(x => x.empno == id).FirstOrDefault();
+            db.emp5.Remove(obj1);
+            db.SaveChanges();
+        }
+    }
+}
+
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+
+namespace WebApplication66.Models
+{
+    public class emp
+    {
+        public int empno { get; set; }
+        public string empname { get; set; }
+        public int salary { get; set; }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Net.Http;
+using Newtonsoft.Json;
+
+namespace WebApplication66.Controllers
+{
+    public class EmployeeController : Controller
+    {
+        // GET: Employee
+        public ActionResult Index()
+        {
+            return View();
+        }
+        Uri baseaddress = new Uri("https://localhost:44306/api/");
+        HttpClient cl;
+        public EmployeeController()
+        {
+            cl = new HttpClient();
+            cl.BaseAddress = baseaddress;
+        }
+
+
+        public ActionResult Display()
+        {
+            List<Models.emp> ls = new List<Models.emp>();
+
+            HttpResponseMessage response = cl.GetAsync(cl.BaseAddress + "/values").Result;
+            if(response.IsSuccessStatusCode)
+            {
+                string data = response.Content.ReadAsStringAsync().Result;
+                ls = JsonConvert.DeserializeObject<List<Models.emp>>(data);
+            }
+
+            return View(ls);
+        }
+    }
+}
