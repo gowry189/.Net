@@ -1,0 +1,435 @@
+
+IN WEBAPICONFIG.CS FILE UNDER APP_START FOLDER
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Http;
+
+namespace WebApplication65
+{
+    public static class WebApiConfig
+    {
+        public static void Register(HttpConfiguration config)
+        {
+            // Web API configuration and services
+
+            // Web API routes
+            config.MapHttpAttributeRoutes();
+
+            config.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{action}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
+        }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using WebApplication65.DAL;
+
+namespace WebApplication65.Controllers
+{
+    public class ValuesController : ApiController
+    {
+        // GET api/values
+      
+        hrblock_dbEntities db = new hrblock_dbEntities();
+
+        [HttpGet]
+        [ActionName("Empget1")]
+        public IEnumerable<emp5> Empget1()
+        {
+            return db.emp5.ToList();          
+        }
+
+
+        [HttpGet]
+        [ActionName("Deptget1")]
+        public IEnumerable<dept> Deptget1()
+        {
+            return db.depts.ToList();
+        }
+
+
+        // GET api/values/5
+        [HttpGet]
+        [ActionName("Empget2")]
+        public emp5 Empget2(int id)
+        {
+            emp5 obj1 = db.emp5.Where(x => x.empno == id).FirstOrDefault();
+            return obj1;
+        }
+
+        // POST api/values
+      
+        [HttpPost]
+        [ActionName("Emppost1")]    
+        public void Emppost1([FromBody] emp5 obj)
+        {
+            db.emp5.Add(obj);
+            db.SaveChanges();
+        }
+
+        [HttpPost]
+        [ActionName("Deptpost1")]     
+        public void Deptpost1([FromBody] dept obj)
+        {
+            db.depts.Add(obj);
+            db.SaveChanges();
+        }
+
+        // PUT api/values/5
+        [HttpPut]
+        [ActionName("Empupdate1")]
+        public void Empupdate1(int id, [FromBody] emp5 obj)
+        {
+            emp5 obj1 = db.emp5.Where(x => x.empno == id).FirstOrDefault();
+            obj1.empno = obj.empno;
+            obj1.empname = obj.empname;
+            obj1.salary = obj.salary;
+            db.SaveChanges();
+        }
+
+
+        [HttpPut]
+        [ActionName("Deptupdate1")]
+        public void Deptupdate1(int id, [FromBody] dept obj)
+        {
+           dept obj1 = db.depts.Where(x => x.deptno == id).FirstOrDefault();
+            obj1.deptno = obj.deptno;
+            obj1.deptname = obj.deptname;
+            obj1.locid = obj.locid;
+            db.SaveChanges();
+        }
+        // DELETE api/values/5
+       
+        [HttpDelete]
+        [ActionName("Empdelete1")]
+        public void Empdelete1(int id)
+        {
+            emp5 obj1 = db.emp5.Where(x => x.empno == id).FirstOrDefault();
+            db.emp5.Remove(obj1);
+            db.SaveChanges();
+        }
+    }
+}
+
+
+IN MVC CLIENT
+NUGET PACKAGE INSTALL Microsoft.Aspnet.WebApi.Client
+
+
+IN MODEL FOLDER CREATE EMP CLASS
+
+    public class emp
+    {
+        public int empno { get; set; }
+        public string empname { get; set; }
+        public int salary { get; set; }
+    }
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Text;
+
+namespace WebApplication66.Controllers
+{
+    public class EmployeeController : Controller
+    {
+        // GET: Employee
+        public ActionResult Index()
+        {
+            return View();
+        }
+        Uri baseaddress = new Uri("https://localhost:44306/api/");
+        HttpClient cl;
+        public EmployeeController()
+        {
+            cl = new HttpClient();
+            cl.BaseAddress = baseaddress;
+        }
+
+
+        public ActionResult Display()
+        {
+            List<Models.emp> ls = new List<Models.emp>();
+
+            HttpResponseMessage response = cl.GetAsync(cl.BaseAddress + "/values/Empget1").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                string data = response.Content.ReadAsStringAsync().Result;
+                ls = JsonConvert.DeserializeObject<List<Models.emp>>(data);
+            }
+
+            return View(ls);
+        }
+
+        public ActionResult registeremp()
+        {
+            return View();
+        }
+
+        public ActionResult registeremp1(Models.emp obj)
+        {
+            string data = JsonConvert.SerializeObject(obj);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = cl.PostAsync(cl.BaseAddress + "/values/Emppost1", content).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                ViewBag.status = "Registered Successfully";
+                return View("registeremp");
+            }
+
+
+            return View("registeremp");
+        }
+
+        public ActionResult deleteemp()
+        {
+            return View();
+        }
+        public ActionResult deleteemp1(string text1)
+        {
+            int empno = Convert.ToInt32(text1);
+            HttpResponseMessage response = cl.DeleteAsync(cl.BaseAddress + "/values/Empdelete1/" + empno).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                ViewBag.status = "Deleted Succesfully...";
+                return View("deleteemp");
+            }
+            return View("deleteemp");
+        }
+
+        public ActionResult updateemp()
+        {
+            return View();
+        }
+
+        public ActionResult updateemp1(string text1)
+        {
+            int empno = Convert.ToInt32(text1);
+            Models.emp obj = new Models.emp();
+            HttpResponseMessage response = cl.GetAsync(cl.BaseAddress + "/values/Empget2/" + empno).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                string data = response.Content.ReadAsStringAsync().Result;
+                obj = JsonConvert.DeserializeObject<Models.emp>(data);
+            }
+            return View(obj);
+        }
+
+        public ActionResult updateemp2(Models.emp obj)
+        {
+            string data = JsonConvert.SerializeObject(obj);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = cl.PutAsync(cl.BaseAddress + "/values/Empupdate1/" + obj.empno,content).Result;
+            if(response.IsSuccessStatusCode)
+            {
+                ViewBag.status = "Updated Successfully..";
+                return View("updateemp1");
+            }
+            return View("updateemp1");
+        }
+    }
+}
+
+
+
+@model WebApplication66.Models.emp
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>registeremp</title>
+</head>
+<body>
+    <h1>Employee Registration Form</h1>
+   @using(Html.BeginForm("registeremp1","Employee",FormMethod.Post))
+            {
+<table border="1" width="50%">
+    <tr>
+        <td>Empno</td>
+        <td>@Html.TextBoxFor(x => x.empno)</td>
+    </tr>
+
+    <tr>
+        <td>Empname</td>
+        <td>@Html.TextBoxFor(x => x.empname)</td>
+    </tr>
+
+    <tr>
+        <td>Salary</td>
+        <td>@Html.TextBoxFor(x => x.salary)</td>
+    </tr>
+
+    <tr>
+        <td><input id="Submit1" type="submit" value="Register" /></td>
+        <td>@ViewBag.status</td>
+    </tr>
+
+</table>
+            }
+</body>
+</html>
+
+
+
+
+@model IEnumerable<WebApplication66.Models.emp> 
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Display</title>
+</head>
+<body>
+    <table width="60%" border="1">
+        <tr>
+            <th>Empno</th>
+            <th>Empname</th>
+            <th>Salary</th>
+        </tr>
+        @foreach (var x in Model)
+        {
+    <tr>
+        <td>@Html.DisplayFor(model => x.empno)</td>
+      
+        <td>@Html.DisplayFor(model => x.empname)</td>
+       
+        <td> @Html.DisplayFor(model => x.salary)</td>
+      
+    </tr>
+        }
+
+
+        </table>
+
+   
+</body>
+</html>
+
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>deleteemp</title>
+</head>
+<body>
+   @using(Html.BeginForm("deleteemp1", "Employee",FormMethod.Post))
+   {
+                <table>
+                    <tr>
+                        <td>Enter Employee number to delete</td>
+                        <td><input id="Text1" type="text" name="text1" /></td>
+                        <td><input id="Submit1" type="submit" value="Delete" /></td>
+                    </tr>
+                </table>
+            }
+
+    @ViewBag.status
+</body>
+</html>
+
+
+
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>updateemp</title>
+</head>
+<body>
+    @using (Html.BeginForm("updateemp1", "Employee", FormMethod.Post))
+    {
+        <table>
+            <tr>
+                <td>Enter Employee number to update</td>
+                <td><input id="Text1" type="text" name="text1" /></td>
+                <td><input id="Submit1" type="submit" value="update" /></td>
+            </tr>
+        </table>
+    }
+</body>
+</html>
+
+
+
+@model WebApplication66.Models.emp
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>updateemp1</title>
+</head>
+<body>
+    @using (Html.BeginForm("updateemp2", "Employee", FormMethod.Post))
+    {
+    <table>
+        <tr>
+            <td>Empno</td>
+            <td>@Html.TextBoxFor(x => x.empno)</td>
+        </tr>
+
+        <tr>
+            <td>Empname</td>
+            <td>@Html.TextBoxFor(x => x.empname)</td>
+        </tr>
+
+        <tr>
+            <td>Salary</td>
+            <td>@Html.TextBoxFor(x => x.salary)</td>
+        </tr>
+
+        <tr>
+            <td><input id="Submit1" type="submit" value="Update" /></td>
+            <td>@ViewBag.status</td>
+        </tr>
+    </table>
+    }
+</body>
+</html>
