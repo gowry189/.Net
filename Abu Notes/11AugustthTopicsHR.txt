@@ -1,0 +1,226 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'proj1';
+  
+  empno:number;
+  empname:string;
+  job:string;
+  deptno:number;
+  salary:number;
+  tax:number;
+  netsal:number;
+  rank:string;
+  i:number;
+  j:number;
+  sum:number=0;
+  sum1:number=0;
+  array:number[];
+  emp:any;
+  emplist:employee1[];
+
+  empno1:number;
+  empname1:string;
+  salary1:number;
+  
+
+  constructor()
+  {
+    // this.empno=1001;
+    // this.empname='sam';
+    // this.job='manager';
+    // this.deptno=10;
+    // this.salary=9000;
+ 
+
+    this.emplist=[
+      {"empno":1001,"empname":"sam","salary":5000},
+      {"empno":1002,"empname":"sam1","salary":6000},
+      {"empno":1003,"empname":"sam5","salary":5000},
+      {"empno":1004,"empname":"sam6","salary":3000}
+    ];
+  }
+
+  submit1(eno,ename,job1,dno,sal)
+  {
+    this.empno=eno;
+    this.empname=ename;
+    this.job=job1;
+    this.deptno=dno;
+    this.salary=sal;
+    
+
+    
+    if(this.salary >= 15000 && this.salary < 20000)
+    {
+      this.tax=this.salary*10/100;
+    }
+    else if(this.salary >= 10000 && this.salary < 15000)
+    {
+      this.tax=this.salary*8/100;
+    }
+    else if(this.salary >= 5000 && this.salary < 10000)
+    {
+      this.tax=this.salary*6/100;
+    }
+    else
+    {
+      this.tax=0;
+    }
+    this.netsal=this.salary-this.tax;
+
+    switch(this.job)
+    {
+      case  'manager':
+      this.rank="A Grade";
+      break;
+      case  'admin':
+      this.rank="B Grade";
+      break;
+      case  'developer':
+      this.rank="C Grade";
+      break;
+      case  'tester':
+      this.rank="D Grade";
+      break;
+      default:
+      this.rank="Normal Employee";
+      break;
+    }
+    
+    this.array=[10,20,30,40,50,60];
+    for(this.i=0;this.i<this.array.length;this.i++)
+    {
+      this.sum=this.sum+(this.array[this.i])
+
+    }
+
+for(this.i=0;this.i<this.emplist.length;this.i++)
+{
+ this.sum1=this.sum1+this.emplist[this.i].salary;
+}
+
+}
+
+search1(eno1)
+{
+  for(this.i=0;this.i<this.emplist.length;this.i++)
+{
+  if(this.emplist[this.i].empno==eno1)
+  {
+    this.empno1=this.emplist[this.i].empno
+    this.empname1=this.emplist[this.i].empname
+    this.salary1=this.emplist[this.i].salary
+  }
+ 
+}
+}
+
+
+}
+class employee1
+{
+  public empno;
+  public empname;
+  public salary;
+}
+
+
+
+
+
+<!--The content below is only a placeholder and can be replaced.-->
+<h1><b>Employee Registration Form</b></h1>
+<table border="1" width="50%" bgcolor="yellow">
+  <tr>
+    <td>Empno</td>
+    <td><input type="text" #eno></td>
+  </tr>
+
+  <tr>
+    <td>Empname</td>
+    <td><input type="text" #ename></td>
+  </tr>
+
+  <tr>
+    <td>job</td>
+    <td><input type="text" #job1></td>
+  </tr>
+
+  <tr>
+    <td>Deptno</td>
+    <td><input type="text" #dno></td>
+  </tr>
+
+  <tr>
+    <td>Salary</td>
+    <td><input type="text" #sal></td>
+  </tr>
+ <tr>
+   <td>
+     <button (click)="submit1(eno.value,ename.value,job1.value,dno.value,sal.value)">Register</button>
+   </td>
+   <td></td>
+ </tr>
+
+</table>
+
+<h3>empno  : {{empno}}</h3>
+<h3>empname: {{empname}}</h3>
+<h3>Job    : {{job}}</h3>
+<h3>deptno : {{deptno}}</h3>
+<h3>salary : {{salary}}</h3>
+<h3>tax    : {{tax}}</h3>
+<h3>Netsal : {{netsal}}</h3>
+<h3>Rank   : {{rank}}</h3>
+<h3>i value: {{sum}}</h3>
+<h3>salry sum: {{sum1}}</h3>
+
+<table>
+  <tr>
+    <td><h3>enter the empno to search</h3></td>
+    <td><input type="text" #eno1></td>
+    <td> <button (click)="search1(eno1.value)">Search</button></td>
+  </tr>
+</table>
+<h3>{{empno1}}</h3>
+<h3>{{empname1}}</h3>
+<h3>{{salary1}}</h3>
+
+
+<!-- <table>
+  <tr>
+    <th>empno</th>
+    <th>empname</th>
+    <th>salary</th>
+  </tr>
+  <tr>
+    <td>1001</td>
+    <td>sam</td>
+    <td>5000</td>
+  </tr>
+  <tr>
+    <td>1002</td>
+    <td>rahul</td>
+    <td>6000</td>
+  </tr>
+  <tr>
+    <td>1003</td>
+    <td>sanjay</td>
+    <td>9000</td>
+  </tr>
+
+ 
+</table>
+empno={{empno}}<br>
+empname={{empname}}<br>
+job={{job}}<br>
+deptno={{deptno}}<br>
+salary={{salary}}<br> -->
+
+<router-outlet></router-outlet>
