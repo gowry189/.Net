@@ -1,0 +1,490 @@
+SERVICE FILE
+
+import { Injectable } from '@angular/core';
+import {Employee} from 'src/app/employee';
+import {HttpClient,HttpHeaders} from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class EmployeeService {
+
+  url="https://localhost:44306/api/values"
+  constructor(private http1:HttpClient) { }
+
+  getAllEmployees()
+  {
+    return this.http1.get("https://localhost:44306/api/values/Empget1")
+  }
+
+ getEmployeeByEmpno(empno:string):Observable<Employee>
+ {
+  return this.http1.get<Employee>("https://localhost:44306/api/values/Empget2"+"/"+empno)
+ }
+
+ registerEmp(employee:Employee):Observable<Employee>
+ {
+   let httpHeaders =new HttpHeaders()
+   .set('Content-Type','application/json')
+   return this.http1.post<Employee>("https://localhost:44306/api/values/Emppost1",employee);
+ }
+
+ updateemp(employee:Employee):Observable<Employee>
+ {
+   let httpheader=new HttpHeaders()
+   .set('Content-Type','application/json')
+   return this.http1.put<Employee>("https://localhost:44306/api/values/Empupdate1"+"/"+employee.empno,employee);
+ }
+
+ deleteemp(empid:string):Observable<Employee>
+ {
+  let httpHeaders =new HttpHeaders()
+  .set('Content-Type','application/json')
+  return this.http1.delete<Employee>("https://localhost:44306/api/values/Empdelete1"+"/"+empid);
+ }
+
+}
+
+
+TS FILE
+
+
+import { Component, OnInit } from '@angular/core';
+import { Employee } from '../employee';
+import {EmployeeService} from '../employee.service'
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+
+@Component({
+  selector: 'app-employee',
+  templateUrl: './employee.component.html',
+  styleUrls: ['./employee.component.css']
+})
+export class EmployeeComponent implements OnInit {
+
+  listemp1:any
+  listemp2:any
+  listemp3:any
+  eno1:string;
+  eobj:Employee;
+  status1:string;
+  message1:string;
+
+  empno:string;
+  empname:string;
+  salary:string;
+
+  constructor(private service1:EmployeeService) { }
+
+  ngOnInit() {
+    this.getdata();
+  
+  }
+
+  getdata()
+  {
+    this.service1.getAllEmployees().subscribe(data=>{this.listemp1=data});
+  }
+
+  getEmpObj(eno)
+  {
+   this.eno1=eno;
+   this.service1.getEmployeeByEmpno(this.eno1).subscribe(data=>{this.listemp2=data});
+  }
+
+  register(eno1,ename1,sal1)
+  {
+  this.eobj=new Employee();
+  this.eobj.empno=eno1;
+  this.eobj.empname=ename1;
+  this.eobj.salary=sal1;
+ 
+  this.service1.registerEmp(this.eobj).subscribe(()=>{this.status1="Record Submitted..."})
+
+  }
+
+  getrec(empval)
+  {
+   this.message1=empval;
+  }
+
+
+  getEmpObj1(empval)
+  {
+   this.eno1=empval;
+   this.service1.getEmployeeByEmpno(this.eno1).subscribe(data=>{this.listemp3=data});
+  
+  }
+
+
+  empupdate(eno2,ename2,sal2)
+  {
+  this.eobj=new Employee();
+  this.eobj.empno=eno2;
+  this.eobj.empname=ename2;
+  this.eobj.salary=sal2;
+
+  this.service1.updateemp(this.eobj).subscribe(()=>{this.status1="Updated successfully.."})
+  }
+
+  deleteemployee(eno3)
+  {
+   this.eno1=eno3;
+   this.service1.deleteemp(this.eno1).subscribe(()=>{this.status1="Deletion successfull"})
+  }
+
+}
+
+HTML FILE
+
+
+<h1>Employee Detaul</h1>
+<hr>
+<table class="mytable">
+    <tr>
+        <th>Empno</th>
+        <th>Empname</th>
+        <th>Salary</th>
+    </tr>
+    <tr *ngFor="let x of listemp1">
+        <td>{{x.empno}}</td>
+        <td>{{x.empname}}</td>
+        <td>{{x.salary}}</td>
+
+    </tr>
+
+</table>
+<table>
+    <tr>
+        <td>Enter the Employee Number to Search</td>
+        <td><input type="text" #eno></td>
+        <td><button (click)="getEmpObj(eno.value)">Search</button></td>
+    </tr>
+</table>
+<table class="mytable">
+
+    <tr>
+        <th>empno</th>
+        <th>empname</th>
+        <th>salary</th>  
+    </tr>
+
+    <tr>     
+        <td>{{listemp2.empno}}</td>
+        <td>{{listemp2.empname}}</td>
+        <td>{{listemp2.salary}}</td>
+    </tr>
+</table>
+
+<h1>Employee Registration Form</h1>
+<hr>
+<table class="mytable">
+    <tr>
+        <td>Empno</td>
+        <td><input type="text" #eno1></td>
+    </tr>
+
+    <tr>
+        <td>Empname</td>
+        <td><input type="text" #ename1></td>
+    </tr>
+
+    <tr>
+        <td>Salary</td>
+        <td><input type="text" #sal1></td>
+    </tr>
+
+    <tr>
+        <td><button (click)="register(eno1.value,ename1.value,sal1.value)">Register </button></td>
+        <td>{{status1}}</td>
+    </tr>
+
+</table>
+<h3>Select Employee Number</h3>
+<table>
+<tr><select #empval (change)="getEmpObj1(empval.value)">
+    <option>Select Empno</option>
+    <option>1001</option>
+    <option>1002</option>
+    <option>1003</option>
+    <option>1004</option>
+    <option>1001</option>
+</select> 
+</tr>
+</table>
+
+
+<h1>Employee Update Form</h1>
+<hr>
+<table class="mytable">
+    <tr>
+        <td>Empno</td>
+        <td><input type="text" #eno2 [(ngModel)]="listemp3.empno"></td>
+    </tr>
+
+    <tr>
+        <td>Empname</td>
+        <td><input type="text" #ename2 [(ngModel)]="listemp3.empname"></td>
+    </tr>
+
+    <tr>
+        <td>Salary</td>
+        <td><input type="text" #sal2 [(ngModel)]="listemp3.salary"></td>
+    </tr>
+
+    <tr>
+        <td><button (click)="empupdate(eno2.value,ename2.value,sal2.value)">Update </button></td>
+        <td>{{status1}}</td>
+    </tr>
+
+</table>
+
+
+<table>
+    <tr>
+        <td>Enter the Employee Number to Delete</td>
+        <td><input type="text" #eno3></td>
+        <td><button (click)="deleteemployee(eno3.value)">Delete</button></td>
+    </tr>
+</table>
+
+
+
+
+APP.MODULE.TS
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { EmployeeComponent } from './employee/employee.component';
+import { PaymentComponent } from './payment/payment.component';
+import {EmployeeService} from './employee.service'
+import {HttpClientModule} from '@angular/common/http';
+import { RegcompComponent } from './regcomp/regcomp.component';
+import { Login1Component } from './login1/login1.component'
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    EmployeeComponent,
+    PaymentComponent,
+    RegcompComponent,
+    Login1Component
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  providers: [EmployeeService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+LOGIN TS
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-login1',
+  templateUrl: './login1.component.html',
+  styleUrls: ['./login1.component.css']
+})
+export class Login1Component implements OnInit {
+
+  v_type:string;
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+  loginMethods(empval)
+  {
+   if(empval=="Login")
+   {
+     this.v_type="Login"
+   }
+   else if(empval=="Registration")
+   {
+     this.v_type="Registration"
+   }
+   else if(empval=="Forgot_Password")
+   {
+     this.v_type="Forgot_Password"
+   }
+   else if(empval=="Home")
+   {
+     this.v_type="Home"
+   }
+  }
+
+  func1()
+  {
+    this.v_type="Registration"
+  }
+
+  func2()
+  {
+    this.v_type="Forgot_Password"
+  }
+
+  lgoimmethod(login1,pwd1)
+  {
+
+  }
+
+  Register(ename1,pwd2,add1,phn1,sec1,ans1,country)
+  {
+//calling register service..
+    this.v_type="Login";
+  }
+
+
+}
+
+
+
+LOGIN HTML
+
+<h1> HRblock Ltd</h1>
+<h3>This is login module</h3>
+<hr>
+
+<table class="mytable">
+    <tr>
+        <td>Select the View to Display Interface</td>
+    </tr>
+    <tr><select #empval (change)="loginMethods(empval.value)">
+        <option>Select view</option>
+        <option>Login</option>
+        <option>Registration</option>
+        <option>Forgot_Password</option>
+        <option>Home</option>
+    </select> 
+    </tr>
+    </table>
+
+
+    <ng-container *ngIf="v_type=='Login'; then lg1"></ng-container>
+    <ng-container *ngIf="v_type=='Registration'; then reg1"></ng-container>
+    <ng-container *ngIf="v_type=='Forgot_Password'; then fp1"></ng-container>
+    <ng-container *ngIf="v_type=='Home'; then hm1"></ng-container>
+
+    <ng-template #lg1>
+    <h3>User Login Form</h3>
+    <table class="mytable">
+        <tr>
+            <td>UserName</td>
+            <td><input type="text" #login1></td>
+        </tr>
+
+        <tr>
+            <td>Password</td>
+            <td><input type="text" #pwd1></td>
+        </tr>
+
+        <tr>
+            <td><button (click)="lgoimmethod(login1.value,pwd1.value)">Login</button>></td>
+            <td></td>
+        </tr>
+    </table>
+    <a role="button" (click)="func1()">New User Click Here....</a><br>
+    <a role="button" (click)="func2()"> Forget Password Click Here....</a>
+
+
+    </ng-template>
+
+    <ng-template #reg1>
+
+        <h3>User Registration Form</h3>
+        <table class="mytable">
+            <tr>
+                <td>UserName</td>
+                <td><input type="text" #uname1></td>
+            </tr>
+    
+            <tr>
+                <td>Password</td>
+                <td><input type="text" #pwd2></td>
+            </tr>
+
+            <tr>
+                <td>Address</td>
+                <td><input type="text" #add1></td>
+            </tr>
+
+            <tr>
+                <td>Phone</td>
+                <td><input type="text" #phn1></td>
+            </tr>
+
+            <tr>
+                <td>Security quest</td>
+                <td><input type="text" #sec1></td>
+            </tr>
+
+
+            <tr>
+                <td>Answer</td>
+                <td><input type="text" #ans1></td>
+            </tr>
+
+            <tr>
+                <td>Select Country</td>
+                <td><select #country>
+                    <option>--Select Country--</option>
+                    <option>India</option>
+                    <option>Japan</option>
+                    <option>France</option>
+                    <option>Germany</option>
+                </select>></td>
+            </tr>
+    
+            <tr>
+                <td><button (click)="Register(uname1.value,pwd2.value,add1.value,phn1.value,sec1.value,ans1.value,country.value)">Register</button></td>
+                <td></td>
+            </tr>
+        </table>
+    
+
+    </ng-template>
+
+    <ng-template #fp1>
+
+        <h3>Password Recovery Form</h3>
+        <h3>Security Question..</h3>
+        <table class="mytable">
+            <tr>
+                <td>Answer</td>
+                <td><input type="text" #ans21></td>
+            </tr>
+    
+            <tr>
+                <td><button (click)="GetPassword(ans2.value)">GetPassword</button>></td>
+                <td></td>
+            </tr>
+        </table>
+
+    </ng-template>
+
+    <ng-template #hm1>
+
+
+
+    </ng-template>
