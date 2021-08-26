@@ -1,0 +1,411 @@
+INSTALL NUNIT,NUNIT ADAPTER,SELNIUM,CHROME,MICROSFT.OFFICE.INTEROP.OFFICE FROM NUGETPACKAGE MANAGER
+
+using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp19
+{
+    class Program
+    {
+        IWebDriver driver = new ChromeDriver();
+        static void Main(string[] args)
+        {
+
+        }
+        [SetUp]
+        public void initialize()
+        {
+            driver.Navigate().GoToUrl("file:///C:/Users/ABU/source/repos/ConsoleApp19/ConsoleApp19/HTMLPage1.html");
+            Console.WriteLine("opened url");
+        }
+        [Test]
+        public void regtest()
+        {
+
+            selSetMethods.usernametext(driver, "text1", "sam@123", "id");
+            selSetMethods.passwordtext (driver, "text2", "sam123", "id");
+            selSetMethods.addresstext(driver, "text3", "Cochin", "id");
+            selSetMethods.countrytext(driver, "select1", "India", "id");
+            selSetMethods.academictext(driver, "select2", "Masters", "id");
+            selSetMethods.clickButton(driver, "Button1", "id");
+
+            Console.WriteLine(" user name is " + selGetMethods.userget(driver, "text1", "id"));
+            Console.WriteLine("Password is " + selGetMethods.passget(driver, "text2", "id"));
+            Console.WriteLine("Address " + selGetMethods.addressget(driver, "text3", "id"));
+            Console.WriteLine(" user name is " + selGetMethods.countryget(driver, "select1", "id"));
+
+            Console.WriteLine("executed Test");
+        }
+
+        [TearDown]
+        public void Close()
+        {
+            driver.Close();
+        }
+    }
+}
+
+
+
+
+using OpenQA.Selenium;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp19
+{
+    class selGetMethods
+    {
+        public static string userget(IWebDriver driver,string element,string elementtype)
+        {
+            if(elementtype=="id")
+            {
+                return driver.FindElement(By.Id(element)).GetAttribute("value");
+            }
+            if (elementtype == "Name")
+            {
+                return driver.FindElement(By.Name(element)).GetAttribute("value");
+            }
+            else
+            {
+                return string.Empty;
+            }
+                    
+        }
+
+        public static string passget(IWebDriver driver, string element, string elementtype)
+        {
+            if (elementtype == "id")
+            {
+                return driver.FindElement(By.Id(element)).GetAttribute("value");
+            }
+            if (elementtype == "Name")
+            {
+                return driver.FindElement(By.Name(element)).GetAttribute("value");
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+        public static string addressget(IWebDriver driver, string element, string elementtype)
+        {
+            if (elementtype == "id")
+            {
+                return driver.FindElement(By.Id(element)).GetAttribute("value");
+            }
+            if (elementtype == "Name")
+            {
+                return driver.FindElement(By.Name(element)).GetAttribute("value");
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public static string countryget(IWebDriver driver, string element, string elementtype)
+        {
+            if (elementtype == "id")
+            {
+                return driver.FindElement(By.Id(element)).GetAttribute("value");
+            }
+            if (elementtype == "Name")
+            {
+                return driver.FindElement(By.Name(element)).GetAttribute("value");
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+    }
+}
+
+
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp19
+{
+    class selSetMethods
+    {
+        public static void usernametext(IWebDriver driver,string element,string value,string elementtype)
+        {
+            if(elementtype=="id")
+            {
+                driver.FindElement(By.Id(element)).SendKeys(value);
+            }
+
+            if (elementtype == "Name")
+            {
+                driver.FindElement(By.Name(element)).SendKeys(value);
+            }
+        }
+
+        public static void passwordtext(IWebDriver driver, string element, string value, string elementtype)
+        {
+            if (elementtype == "id")
+            {
+                driver.FindElement(By.Id(element)).SendKeys(value);
+            }
+
+            if (elementtype == "Name")
+            {
+                driver.FindElement(By.Name(element)).SendKeys(value);
+            }
+        }
+
+        public static void addresstext(IWebDriver driver, string element, string value, string elementtype)
+        {
+            if (elementtype == "id")
+            {
+                driver.FindElement(By.Id(element)).SendKeys(value);
+            }
+
+            if (elementtype == "Name")
+            {
+                driver.FindElement(By.Name(element)).SendKeys(value);
+            }
+        }
+
+        public static void countrytext(IWebDriver driver, string element, string value, string elementtype)
+        {
+            if (elementtype == "id")
+            {
+                new SelectElement(driver.FindElement(By.Id(element))).SelectByText(value);
+            }
+
+            if (elementtype == "Name")
+            {
+                new SelectElement(driver.FindElement(By.Id(element))).SelectByText(value);
+            }
+        }
+
+        public static void academictext(IWebDriver driver, string element, string value, string elementtype)
+        {
+            if (elementtype == "id")
+            {
+                new SelectElement(driver.FindElement(By.Id(element))).SelectByText(value);
+            }
+
+            if (elementtype == "Name")
+            {
+                new SelectElement(driver.FindElement(By.Id(element))).SelectByText(value);
+            }
+        }
+
+
+        public static void clickButton(IWebDriver driver, string element, string elementtype)
+        {
+            if (elementtype == "id")
+            {
+                driver.FindElement(By.Id(element)).Click();
+            }
+
+            if (elementtype == "Name")
+            {
+                driver.FindElement(By.Id(element)).Click();
+            }
+        }
+
+    }
+}
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        function reg() {
+            alert("Registered succussfully");
+        }
+    </script>
+
+</head>
+<body>
+    <h1>Registration Page</h1>
+    <table width="40%">
+        <tr>
+            <td>UserName</td>
+            <td><input id="text1" type="text" /></td>
+        </tr>
+
+        <tr>
+            <td>Password</td>
+            <td><input id="text2" type="text" /></td>
+        </tr>
+
+        <tr>
+            <td>Address</td>
+            <td><input id="text3" type="text" /></td>
+        </tr>
+
+        <tr>
+            <td>Country</td>
+            <td>
+                <select id="select1">
+                    <option>--Select--</option>
+                    <option>India</option>
+                    <option>France</option>
+                    <option>Germany</option>
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Academic</td>
+            <td>
+                <select id="select2">
+                    <option>--Select--</option>
+                    <option>Degree</option>
+                    <option>Masters</option>
+                    <option>Doctorate</option>
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Email</td>
+            <td>
+                <input type="Email" id="mail1" />
+            </td>
+        </tr>
+
+        <tr>
+            <td><input id="Button1" type="button" value="Register" onclick="reg()" /></td><td></td>
+        </tr>
+
+    </table>
+</body>
+</html>
+
+
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using excel = Microsoft.Office.Interop.Excel;
+
+namespace ConsoleApp21
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            excel.Application xlapp =new excel.Application();
+            excel.Workbook xlwbk = xlapp.Workbooks.Open(@"C:\Users\ABU\Desktop\TestData.xls");
+            excel._Worksheet xlwsheet = xlwbk.Sheets[1];
+            excel.Range exrange = xlwsheet.UsedRange;
+
+            string projui;
+
+            for(int i=1;i<=3;i++)
+            {
+                projui = exrange.Cells[i][1].value2;
+                IWebDriver driver = new ChromeDriver();
+                driver.Navigate().GoToUrl(projui);
+                Thread.Sleep(50);
+                driver.Close();
+
+            }
+
+
+
+        }
+    }
+}
+
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <h1>This is Login Page</h1>
+    <table>
+        <tr>
+            <td>UserName</td>
+            <td><input id="Text1" type="text" /></td>
+        </tr>
+    </table>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <h1>This is Registration Page</h1>
+    <table>
+        <tr>
+            <td>UserName</td>
+            <td><input id="Text1" type="text" /></td>
+        </tr>
+        <tr>
+            <td>Address</td>
+            <td><input id="Text2" type="text" /></td>
+        </tr>
+    </table>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <h1>This is Search Page</h1>
+    <table>
+        <tr>
+            <td>Enter UID to Search</td>
+            <td><input id="Text1" type="text" /></td>
+            <td><input id="Button1" type="button" value="button" /></td>
+        </tr>
+    </table>
+</body>
+</html>
+
+
+
+CREATE A EXCEL FILE
+
+file:///C:/Users/ABU/source/repos/ConsoleApp21/ConsoleApp21/LoginPage.html
+file:///C:/Users/ABU/source/repos/ConsoleApp21/ConsoleApp21/Registration.html
+file:///C:/Users/ABU/source/repos/ConsoleApp21/ConsoleApp21/Search.html
